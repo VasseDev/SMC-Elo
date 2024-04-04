@@ -1,4 +1,4 @@
-package com.manager.smc;
+package model;
 
 public class Subject {
     private String name;

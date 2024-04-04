@@ -1,4 +1,4 @@
-package com.manager.smc;
+package model;
 
 import java.util.List;
 

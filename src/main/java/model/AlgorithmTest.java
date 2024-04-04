@@ -1,4 +1,4 @@
-package com.manager.smc;
+package model;
 
 public class AlgorithmTest {
     public void testUpdateEloPoints() {

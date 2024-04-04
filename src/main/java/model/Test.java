@@ -1,7 +1,4 @@
-package com.manager.smc;
-
-import java.util.Date;
-import java.util.List;
+package model;
 
 public class Test {
     private Mark mark;
