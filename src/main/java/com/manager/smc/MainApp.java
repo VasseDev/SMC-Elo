@@ -98,6 +98,8 @@ public class MainApp extends Application {
 
             calendar.addEventHandler(handler);
 
+            // a
+
 
             // Convert the CalendarView to a Node
             Node calendarNode = calendarView;
