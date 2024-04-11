@@ -64,9 +64,8 @@ public class MainUiController {
 
         calendarView.dateProperty().addListener((observable, oldValue, newValue) -> {
             showEventDetails();
-            System.out.println("Date changed from " + oldValue + " to " + newValue);
-            // Add your code here that should be executed when the view changes
         });
+
         EventHandler<CalendarEvent> handler = e -> showEventDetails();
 
         calendar.addEventHandler(handler);
@@ -76,9 +75,8 @@ public class MainUiController {
 
         // Add the calendar node to the split pane
         mySplitPane.getItems().set(1, calendarNode);
-
-
     }
+
     private void showEventDetails() {
         List<Entry<?>> entries = calendar.findEntries("");
         for (Entry<?> entry : entries) {
