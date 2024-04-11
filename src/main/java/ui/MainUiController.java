@@ -17,6 +17,9 @@ import javafx.scene.input.MouseEvent;
 import java.time.LocalTime;
 import java.util.List;
 
+import static com.calendarfx.model.CalendarEvent.ANY;
+import static com.calendarfx.model.CalendarEvent.CALENDAR_CHANGED;
+
 public class MainUiController {
 
     boolean isDetailsViewOpen = false;
@@ -29,11 +32,14 @@ public class MainUiController {
     private TextField dateTextField;
     @FXML
     private TextField hourTextField;
+    private CalendarView calendarView;
+    private Calendar calendar;
+
 
     @FXML
     private void initialize() {
         // Create a new calendar
-        Calendar calendar = new Calendar("Verifiche");
+        calendar = new Calendar("Verifiche");
 
         // Create a new calendar source and add the calendar to it
         CalendarSource calendarSource = new CalendarSource("My Calendar Source");
@@ -41,7 +47,7 @@ public class MainUiController {
 
 
         // Create a new calendar view and add the calendar source to it
-        CalendarView calendarView = new CalendarView();
+        calendarView = new CalendarView();
         calendarView.getCalendarSources().clear();
         calendarView.getCalendarSources().add(calendarSource);
         calendarView.setRequestedTime(LocalTime.now());
@@ -54,33 +60,39 @@ public class MainUiController {
         calendarView.setShowPageToolBarControls(false);
         calendarView.setShowPrintButton(false);
         calendarView.setShowSourceTrayButton(false);
+        calendarView.setShowSearchField(false);
 
+        calendarView.dateProperty().addListener((observable, oldValue, newValue) -> {
+            showEventDetails();
+            System.out.println("Date changed from " + oldValue + " to " + newValue);
+            // Add your code here that should be executed when the view changes
+        });
+        EventHandler<CalendarEvent> handler = e -> showEventDetails();
 
-
-        EventHandler<CalendarEvent> handler = e -> {
-            List<Entry<?>> entries = calendar.findEntries("");
-            for (Entry<?> entry : entries) {
-                // Get the EntryViewBase for the entry
-                EntryViewBase<?> entryViewBase = calendarView.findEntryView(entry);
-
-                if (entryViewBase != null) {
-                    // Add a mouse click event handler to the EntryViewBase
-                    entryViewBase.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-                        subjectTextField.setText(entry.getTitle());
-                        dateTextField.setText(entry.getStartDate().toString());
-                        hourTextField.setText(entry.getStartTime().toString());
-                    });
-                }
-            }
-        };
         calendar.addEventHandler(handler);
-
-
 
         // Convert the CalendarView to a Node
         Node calendarNode = calendarView;
 
         // Add the calendar node to the split pane
         mySplitPane.getItems().set(1, calendarNode);
+
+
+    }
+    private void showEventDetails() {
+        List<Entry<?>> entries = calendar.findEntries("");
+        for (Entry<?> entry : entries) {
+            // Get the EntryViewBase for the entry
+            EntryViewBase<?> entryViewBase = calendarView.findEntryView(entry);
+
+            if (entryViewBase != null) {
+                // Add a mouse click event handler to the EntryViewBase
+                entryViewBase.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+                    subjectTextField.setText(entry.getTitle());
+                    dateTextField.setText(entry.getStartDate().toString());
+                    hourTextField.setText(entry.getStartTime().toString());
+                });
+            }
+        }
     }
 }
