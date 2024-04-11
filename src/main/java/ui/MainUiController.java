@@ -11,10 +11,15 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+
 
 import java.time.LocalTime;
+import java.util.List;
 
 public class MainUiController {
+
+    boolean isDetailsViewOpen = false;
 
     @FXML
     private SplitPane mySplitPane;
@@ -50,18 +55,26 @@ public class MainUiController {
         calendarView.setShowPrintButton(false);
         calendarView.setShowSourceTrayButton(false);
 
+
+
         EventHandler<CalendarEvent> handler = e -> {
-            System.out.println("Event handler called");
-            System.out.println("Event target: " + e.getTarget());
-            if (e.getTarget() instanceof Entry) {
-                System.out.println("aaa");
-                EntryViewBase entryViewBase = (EntryViewBase) e.getTarget();
-                Entry entry = entryViewBase.getEntry();
-                subjectTextField.setText(entry.getTitle());
+            List<Entry<?>> entries = calendar.findEntries("");
+            for (Entry<?> entry : entries) {
+                // Get the EntryViewBase for the entry
+                EntryViewBase<?> entryViewBase = calendarView.findEntryView(entry);
+
+                if (entryViewBase != null) {
+                    // Add a mouse click event handler to the EntryViewBase
+                    entryViewBase.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+                        subjectTextField.setText(entry.getTitle());
+                        dateTextField.setText(entry.getStartDate().toString());
+                        hourTextField.setText(entry.getStartTime().toString());
+                    });
+                }
             }
         };
-
         calendar.addEventHandler(handler);
+
 
 
         // Convert the CalendarView to a Node
