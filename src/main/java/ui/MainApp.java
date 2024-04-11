@@ -27,7 +27,7 @@ public class MainApp extends Application {
         Scene scene = new Scene(fxmlLoader.load()); // Load the scene
         primaryStage.setTitle("SMC"); // Set the title of the stage
         primaryStage.setScene(scene); // Set the scene of the stage
-        primaryStage.setResizable(false); // Make the stage non-resizable
+        primaryStage.setResizable(false); // Make the stage non-resizable (pd)
         primaryStage.show(); // Show the stage
 
         MainUiController mainUiController = fxmlLoader.getController(); // Get the controller of the FXML
