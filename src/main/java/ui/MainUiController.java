@@ -9,9 +9,11 @@ import com.calendarfx.view.EntryViewBase;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import model.TestsManager;
 
 
 import java.time.LocalTime;
@@ -22,8 +24,8 @@ import static com.calendarfx.model.CalendarEvent.CALENDAR_CHANGED;
 
 public class MainUiController {
 
+    private TestsManager testsManager;
     boolean isDetailsViewOpen = false;
-
     @FXML
     private SplitPane mySplitPane;
     @FXML
@@ -34,6 +36,8 @@ public class MainUiController {
     private TextField hourTextField;
     private CalendarView calendarView;
     private Calendar calendar;
+    @FXML
+    private Button printButton;
 
 
     @FXML
@@ -77,6 +81,10 @@ public class MainUiController {
         mySplitPane.getItems().set(1, calendarNode);
     }
 
+    void setMainModel(TestsManager testsManager) {
+        this.testsManager = testsManager; // Set the class manager
+    }
+
     private void showEventDetails() {
         List<Entry<?>> entries = calendar.findEntries("");
         for (Entry<?> entry : entries) {
@@ -91,6 +99,14 @@ public class MainUiController {
                     hourTextField.setText(entry.getStartTime().toString());
                 });
             }
+            testsManager.addTest(entry.getTitle(), entry.getStartDate().toString(), entry.getStartTime().getHour(), entry.getEndTime().getHour());
         }
     }
+
+    @FXML
+    private void onPrintButtonClicked() {
+        System.out.println("Print button clicked");
+        testsManager.printTests();
+    }
+
 }

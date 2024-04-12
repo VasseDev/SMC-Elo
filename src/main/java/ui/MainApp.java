@@ -7,6 +7,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import model.TestsManager;
+
 import java.io.IOException;
 import java.util.Optional;
 
@@ -14,6 +16,7 @@ public class MainApp extends Application {
     private Stage primaryStage;
     private MainUiController mainController;
     private boolean dayPage;
+    TestsManager testsManager;
 
 
     @Override
@@ -30,7 +33,10 @@ public class MainApp extends Application {
         primaryStage.setResizable(false); // Make the stage non-resizable (pd)
         primaryStage.show(); // Show the stage
 
+        testsManager = new TestsManager();
+
         MainUiController mainUiController = fxmlLoader.getController(); // Get the controller of the FXML
+        mainUiController.setMainModel(testsManager); // Set the model of the controller
 
         primaryStage.setOnCloseRequest(this::closeWindowEvent); // Set the close window event
     }
