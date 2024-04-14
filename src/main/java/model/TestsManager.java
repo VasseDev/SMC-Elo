@@ -29,16 +29,16 @@ public class TestsManager {
         subjectsList.add(new Subject("Telecomunicazioni", 1));
     }
     
-    public void addTest(String subject, String date, int initalHour, int finalHour) {
+    public void addTest(String subject, String date, int initialHour, int finalHour) {
         for (Subject s : subjectsList) {
             if (s.getName().equalsIgnoreCase(subject)) {
-                Test test = new Test(s, date, initalHour, finalHour);
+                Test test = new Test(s, date, initialHour, finalHour);
 
                 for (Test t : testsList) {
-                    if (t.getDate().equals(test.getDate())) {
+                    if (t.getDate().equals(test.getDate())
+                            && t.getSubject().getName().equalsIgnoreCase(test.getSubject().getName())) {
                         testsList.remove(t);
                         testsList.add(test);
-                        System.out.println("Test already exists");
                         return;
                     }
                 }
@@ -47,14 +47,33 @@ public class TestsManager {
                 System.out.println("Test added");
                 System.out.println("Subject: " + s.getName());
                 System.out.println("Date: " + date);
-                System.out.println("Initial Hour: " + initalHour);
+                System.out.println("Initial Hour: " + initialHour);
                 System.out.println("Final Hour: " + finalHour);
                 return;
             }
         }
     }
 
-    public void printTests() {
+    public void saveToCSV() {
+        try {
+            ConvertDataToCSV.write(testsList);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        printTestsList();
+    }
+
+    public ArrayList<Test> readFromCSV() {
+        try {
+            testsList = ConvertDataToCSV.read("test.csv", subjectsList);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        printTestsList();
+        return testsList;
+    }
+
+    private void printTestsList() {
         for (Test t : testsList) {
             System.out.println("Subject: " + t.getSubject().getName());
             System.out.println("Date: " + t.getDate());

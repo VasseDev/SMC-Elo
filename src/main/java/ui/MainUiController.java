@@ -9,18 +9,17 @@ import com.calendarfx.view.EntryViewBase;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import model.Test;
 import model.TestsManager;
 
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
-
-import static com.calendarfx.model.CalendarEvent.ANY;
-import static com.calendarfx.model.CalendarEvent.CALENDAR_CHANGED;
 
 public class MainUiController {
 
@@ -36,12 +35,12 @@ public class MainUiController {
     private TextField hourTextField;
     private CalendarView calendarView;
     private Calendar calendar;
-    @FXML
-    private Button printButton;
 
 
     @FXML
     private void initialize() {
+        this.testsManager = new TestsManager();
+
         // Create a new calendar
         calendar = new Calendar("Verifiche");
 
@@ -65,6 +64,16 @@ public class MainUiController {
         calendarView.setShowPrintButton(false);
         calendarView.setShowSourceTrayButton(false);
         calendarView.setShowSearchField(false);
+
+        // Cycle through the tests and add them to the calendar
+        ArrayList<Test> testArrayList = testsManager.readFromCSV();
+        for (Test test : testArrayList) {
+            Entry<?> entry = new Entry<>(test.getSubject().getName());
+            entry.changeStartDate(LocalDate.parse(test.getDate()));
+            entry.changeStartTime(LocalTime.of(test.getInitialHour(), 0));
+            entry.changeEndTime(LocalTime.of(test.getFinalHour(), 0));
+            calendar.addEntry(entry);
+        }
 
         calendarView.dateProperty().addListener((observable, oldValue, newValue) -> {
             showEventDetails();
@@ -104,9 +113,9 @@ public class MainUiController {
     }
 
     @FXML
-    private void onPrintButtonClicked() {
-        System.out.println("Print button clicked");
-        testsManager.printTests();
+    private void onSaveButtonClicked() {
+        System.out.println("\nPrint button clicked");
+        testsManager.saveToCSV();
     }
 
 }
