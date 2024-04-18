@@ -51,7 +51,8 @@ public class Student {
 
     public StudentTest getTest(String name, String date) {
         for (StudentTest studentTest : testsList) {
-            if (studentTest.getSubject().getName().equals(name) && studentTest.getDate().equals(date)) {
+            if (studentTest.getSubject().getName().equalsIgnoreCase(name) && studentTest.getDate().equals(date)) {
+                System.out.println("Test found");
                 return studentTest;
             }
         }

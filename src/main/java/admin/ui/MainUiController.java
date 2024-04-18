@@ -121,11 +121,10 @@ public class MainUiController {
                     ArrayList<Student> studentsList = studentManager.getStudentsList();
                     ArrayList<StudentTable> testsList = new ArrayList<>();
                     for(Student student : studentsList) {
-                        System.out.println(student.getName());
                         testsList.add(new StudentTable(student, student.getTest(entry.getTitle(), entry.getStartDate().toString())));
                     }
                     studentsObservableList = FXCollections.observableArrayList(testsList);
-
+                    studentTableView.setItems(studentsObservableList);
                 });
             }
             testsManager.addTest(entry.getTitle(), entry.getStartDate().toString(), entry.getStartTime().getHour(), entry.getEndTime().getHour());
