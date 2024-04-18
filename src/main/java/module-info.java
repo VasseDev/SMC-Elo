@@ -5,8 +5,10 @@ module com.manager.smc {
     requires org.kordamp.bootstrapfx.core;
     requires com.calendarfx.view;
 
-    opens model to javafx.fxml;
-    exports model;
-    exports ui;
-    opens ui to javafx.fxml;
+    opens admin to javafx.fxml;
+    exports admin;
+    exports admin.ui;
+    opens admin.ui to javafx.fxml;
+    exports student;
+    opens student to javafx.fxml;
 }

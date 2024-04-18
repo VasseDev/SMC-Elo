@@ -1,19 +1,15 @@
-package model;
+package admin;
 
-public class Test {
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+public class AdminTest {
     private final Subject subject;
     private final String date;
     private final int initialHour;
     private final int finalHour;
 
-    public Test(Subject subject, String date, Mark mark, int initialHour, int finalHour){
-        this.subject=subject;
-        this.date=date;
-        this.initialHour = initialHour;
-        this.finalHour = finalHour;
-    }
-
-    public Test(Subject subject, String date, int initialHour, int finalHour){
+    public AdminTest(Subject subject, String date, int initialHour, int finalHour){
         this.subject=subject;
         this.date=date;
         this.initialHour = initialHour;

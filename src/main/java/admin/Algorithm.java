@@ -1,4 +1,7 @@
-package model;
+package admin;
+
+import student.Student;
+import student.StudentTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +24,8 @@ public class Algorithm {
         double sum=0;
         int counter=0;
         for (Student student: studentsList) {
-            for (Test test : student.getTestsList()) {
-                if (test.getSubject().equals(subject) && test.getDate().equals(date)) {
+            for (StudentTest studentTest : student.getTestsList()) {
+                if (studentTest.getSubject().equals(subject) && studentTest.getDate().equals(date)) {
                     //sum += test.getMark().getValue();
                     counter++;
                 }
@@ -39,8 +42,8 @@ public class Algorithm {
         double averageGrade = averageTest(subject, date);
         System.out.println(averageGrade);
         for (Student student: studentsList) {
-            for (Test test : student.getTestsList()) {
-                if (test.getSubject().equals(subject) && test.getDate().equals(date)) {
+            for (StudentTest studentTest : student.getTestsList()) {
+                if (studentTest.getSubject().equals(subject) && studentTest.getDate().equals(date)) {
                     /*if (test.getMark().getValue() >= averageGrade) {
                         student.updateElo((int) ((test.getMark().getValue() - averageGrade)
                                 * test.getSubject().getMultiplier()));

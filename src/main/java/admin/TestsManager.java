@@ -1,13 +1,13 @@
-package model;
+package admin;
 
 import java.util.ArrayList;
 
 public class TestsManager {
-    ArrayList<Test> testsList;
+    ArrayList<AdminTest> testsList;
     ArrayList<Subject> subjectsList;
     
     public TestsManager() {
-        this.testsList = new ArrayList<Test>();
+        this.testsList = new ArrayList<AdminTest>();
         this.subjectsList = new ArrayList<Subject>();
         subjectsList.add(new Subject("Matematica", 1));
         subjectsList.add(new Subject("Italiano", 1));
@@ -28,22 +28,23 @@ public class TestsManager {
         subjectsList.add(new Subject("Sistemi e reti", 1));
         subjectsList.add(new Subject("Telecomunicazioni", 1));
     }
-    
+
+
     public void addTest(String subject, String date, int initialHour, int finalHour) {
         for (Subject s : subjectsList) {
             if (s.getName().equalsIgnoreCase(subject)) {
-                Test test = new Test(s, date, initialHour, finalHour);
+                AdminTest adminTest = new AdminTest(s, date, initialHour, finalHour);
 
-                for (Test t : testsList) {
-                    if (t.getDate().equals(test.getDate())
-                            && t.getSubject().getName().equalsIgnoreCase(test.getSubject().getName())) {
+                for (AdminTest t : testsList) {
+                    if (t.getDate().equals(adminTest.getDate())
+                            && t.getSubject().getName().equalsIgnoreCase(adminTest.getSubject().getName())) {
                         testsList.remove(t);
-                        testsList.add(test);
+                        testsList.add(adminTest);
                         return;
                     }
                 }
 
-                testsList.add(test);
+                testsList.add(adminTest);
                 System.out.println("Test added");
                 System.out.println("Subject: " + s.getName());
                 System.out.println("Date: " + date);
@@ -58,12 +59,13 @@ public class TestsManager {
         try {
             ConvertDataToCSV.write(testsList);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            // create file
+
         }
         printTestsList();
     }
 
-    public ArrayList<Test> readFromCSV() {
+    public ArrayList<AdminTest> readFromCSV() {
         try {
             testsList = ConvertDataToCSV.read("test.csv", subjectsList);
         } catch (Exception e) {
@@ -74,7 +76,7 @@ public class TestsManager {
     }
 
     private void printTestsList() {
-        for (Test t : testsList) {
+        for (AdminTest t : testsList) {
             System.out.println("Subject: " + t.getSubject().getName());
             System.out.println("Date: " + t.getDate());
             System.out.println("Initial Hour: " + t.getInitialHour());

@@ -1,4 +1,4 @@
-package ui;
+package admin.ui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -7,7 +7,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import model.TestsManager;
+import admin.TestsManager;
 
 import java.io.IOException;
 import java.util.Optional;
