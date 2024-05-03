@@ -1,23 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="841.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="admin.ui.MainUiController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="841.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="admin.ui.MainUiController">
    <children>
-      <SplitPane fx:id="mySplitPane" dividerPositions="0.2562574493444577" prefHeight="160.0" prefWidth="813.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="331.0">
+      <StackPane fx:id="stackPane" prefHeight="491.0" prefWidth="830.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane fx:id="calendarAnchorPane" prefHeight="346.0" prefWidth="436.0">
                <children>
-                  <TableView fx:id="studentTableView" prefHeight="537.0" prefWidth="212.0">
-                    <columns>
-                      <TableColumn fx:id="studentNameColumn" prefWidth="123.0" text="Studente" />
-                      <TableColumn fx:id="markColumn" prefWidth="88.0" text="Voto" />
-                    </columns>
-                  </TableView>
-               </children></AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
-        </items>
-      </SplitPane>
+                  <SplitPane fx:id="mySplitPane" dividerPositions="0.2562574493444577" prefHeight="160.0" prefWidth="813.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <items>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="331.0">
+                           <children>
+                              <TableView fx:id="studentTableView" prefHeight="537.0" prefWidth="212.0">
+                                <columns>
+                                  <TableColumn fx:id="studentNameColumn" prefWidth="123.0" text="Studente" />
+                                  <TableColumn fx:id="markColumn" prefWidth="88.0" text="Voto" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+                    </items>
+                  </SplitPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;">
+               <children>
+                  <Button fx:id="startButton" layoutX="401.0" layoutY="257.0" mnemonicParsing="false" onAction="#onStartButtonClick" text="start" />
+               </children>
+            </AnchorPane>
+         </children>
+      </StackPane>
    </children>
 </AnchorPane>
