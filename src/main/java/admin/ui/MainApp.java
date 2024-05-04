@@ -51,6 +51,7 @@ public class MainApp extends Application {
         alert.setContentText("Sei sicuro di voler chiudere il programma?");
         alert.initOwner(primaryStage.getOwner());
         Optional<ButtonType> res = alert.showAndWait();
+        testsManager.loadToDB();
 
         if(res.isPresent()) {
             if(res.get().equals(ButtonType.CANCEL))

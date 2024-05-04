@@ -1,6 +1,9 @@
 module com.manager.smc {
     requires javafx.controls;
     requires javafx.fxml;
+    requires org.mongodb.driver.core;
+    requires org.mongodb.driver.sync.client;
+    requires org.mongodb.bson;
 
     requires org.kordamp.bootstrapfx.core;
     requires com.calendarfx.view;

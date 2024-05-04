@@ -9,20 +9,20 @@ import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
 import com.calendarfx.view.CalendarView;
 import com.calendarfx.view.EntryViewBase;
-import javafx.application.Platform;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import admin.TestsManager;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 import student.Student;
 import student.StudentManager;
 
@@ -52,19 +52,46 @@ public class MainUiController {
     @FXML
     private StackPane stackPane;
     @FXML
-    private AnchorPane calendarAnchorPane;
+    private TabPane adminPage;
+    @FXML
+    private TableView<Student> studentRankingTableView;
+    @FXML
+    private ObservableList<Student> studentRankingObservableList;
+    @FXML
+    private TableColumn<Student, String> studentRankingPositionColumn;
+    @FXML
+    private TableColumn<Student, String> studentRankingNameColumn;
+    @FXML
+    private TableColumn<Student, String> studentRankingSurnameColumn;
+    @FXML
+    private TableColumn<Student, String> studentRankingEloColumn;
 
     @FXML
     private void initialize() {
+
         // Initialize the testsManager and studentManager
         this.testsManager = new TestsManager();
         this.studentManager = new StudentManager();
+
+        testsManager.loadFromDB();
 
         // Initialize the studentsObservableList and set it as the items of the studentTableView
         studentsObservableList = FXCollections.observableArrayList();
         studentTableView.setItems(studentsObservableList);
         studentNameColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         markColumn.setCellValueFactory(cellData -> cellData.getValue().getMarkProperty());
+
+        // Initialize the studentRankingObservableList and set it as the items of the studentRankingTableView
+        studentRankingObservableList = FXCollections.observableArrayList();
+        studentRankingTableView.setItems(studentRankingObservableList);
+        studentRankingPositionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(studentRankingObservableList.indexOf(cellData.getValue()) + 1)));
+        studentRankingNameColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
+        studentRankingSurnameColumn.setCellValueFactory(cellData -> cellData.getValue().getSurnameProperty());
+        studentRankingEloColumn.setCellValueFactory(cellData -> cellData.getValue().getEloProperty());
+        studentRankingPositionColumn.setSortable(false);
+        studentRankingNameColumn.setSortable(false);
+        studentRankingSurnameColumn.setSortable(false);
+        studentRankingEloColumn.setSortable(false);
 
         // Create a new calendar and add it to a new calendar source
         calendar = new Calendar("Verifiche");
@@ -100,6 +127,9 @@ public class MainUiController {
         EventHandler<CalendarEvent> handler = e -> showEventDetails();
         calendar.addEventHandler(handler);
 
+        timeline.setCycleCount(Timeline.INDEFINITE); // Set the timeline to repeat indefinitely
+        timeline.play(); // Start the timeline
+
         // Convert the CalendarView to a Node and add it to the split pane
         Node calendarNode = calendarView;
         mySplitPane.getItems().set(1, calendarNode);
@@ -109,6 +139,21 @@ public class MainUiController {
     void setMainModel(TestsManager testsManager) {
         this.testsManager = testsManager;
     }
+
+    // Create a new timeline
+    Timeline timeline = new Timeline(
+        new KeyFrame(
+            Duration.seconds(1), // Set interval of 1 second
+            event -> {
+                // Code to be executed every 1 second
+                studentManager.calculateEloPoints();
+                // the function put the students in order of elo points
+                studentManager.getStudentsList().sort((student1, student2) -> student2.getElo().compareTo(student1.getElo()));
+                studentRankingObservableList = FXCollections.observableArrayList(studentManager.getStudentsList());
+                studentRankingTableView.setItems(studentRankingObservableList);
+            }
+        )
+    );
 
     // Show the details of the events in the calendar
     private void showEventDetails() {
@@ -139,7 +184,7 @@ public class MainUiController {
 
     @FXML
     private void onStartButtonClick() {
-        stackPane.getChildren().setAll(calendarAnchorPane);
+        stackPane.getChildren().setAll(adminPage);
         showEventDetails();
     }
 }

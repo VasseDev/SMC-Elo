@@ -26,7 +26,7 @@ public class Algorithm {
         for (Student student: studentsList) {
             for (StudentTest studentTest : student.getTestsList()) {
                 if (studentTest.getSubject().equals(subject) && studentTest.getDate().equals(date)) {
-                    //sum += test.getMark().getValue();
+                    sum += studentTest.getMark().getValue();
                     counter++;
                 }
             }
@@ -44,13 +44,13 @@ public class Algorithm {
         for (Student student: studentsList) {
             for (StudentTest studentTest : student.getTestsList()) {
                 if (studentTest.getSubject().equals(subject) && studentTest.getDate().equals(date)) {
-                    /*if (test.getMark().getValue() >= averageGrade) {
-                        student.updateElo((int) ((test.getMark().getValue() - averageGrade)
-                                * test.getSubject().getMultiplier()));
+                    if (studentTest.getMark().getValue() >= averageGrade) {
+                        student.updateElo((int) ((studentTest.getMark().getValue() - averageGrade)
+                                * studentTest.getSubject().getMultiplier()));
                     } else {
-                        student.updateElo((int) ((test.getMark().getValue() - averageGrade)
-                                * test.getSubject().getMultiplier() * negativeMultiplier));
-                    }*/
+                        student.updateElo((int) ((studentTest.getMark().getValue() - averageGrade)
+                                * studentTest.getSubject().getMultiplier() * negativeMultiplier));
+                    }
                 }
             }
         }

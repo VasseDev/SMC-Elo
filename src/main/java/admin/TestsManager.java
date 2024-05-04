@@ -1,5 +1,7 @@
 package admin;
 
+import database.MongoClientConnection;
+
 import java.util.ArrayList;
 
 public class TestsManager {
@@ -9,24 +11,24 @@ public class TestsManager {
     public TestsManager() {
         this.testsList = new ArrayList<AdminTest>();
         this.subjectsList = new ArrayList<Subject>();
-        subjectsList.add(new Subject("Matematica", 1));
-        subjectsList.add(new Subject("Italiano", 1));
-        subjectsList.add(new Subject("Inglese", 1));
-        subjectsList.add(new Subject("Storia", 1));
-        subjectsList.add(new Subject("Scienze", 1));
-        subjectsList.add(new Subject("Arte", 1));
-        subjectsList.add(new Subject("Educazione Fisica", 1));
-        subjectsList.add(new Subject("Religione", 1));
-        subjectsList.add(new Subject("Musica", 1));
-        subjectsList.add(new Subject("Tecnologia", 1));
-        subjectsList.add(new Subject("Informatica", 1));
-        subjectsList.add(new Subject("Geografia", 1));
-        subjectsList.add(new Subject("Filosofia", 1));
-        subjectsList.add(new Subject("Latino", 1));
-        subjectsList.add(new Subject("Greco", 1));
-        subjectsList.add(new Subject("TPS", 1));
-        subjectsList.add(new Subject("Sistemi e reti", 1));
-        subjectsList.add(new Subject("Telecomunicazioni", 1));
+        subjectsList.add(new Subject("Matematica", 100));
+        subjectsList.add(new Subject("Italiano", 100));
+        subjectsList.add(new Subject("Inglese", 80));
+        subjectsList.add(new Subject("Storia", 100));
+        subjectsList.add(new Subject("Scienze", 80));
+        subjectsList.add(new Subject("Arte", 60));
+        subjectsList.add(new Subject("Educazione Fisica", 40));
+        subjectsList.add(new Subject("Religione", 10));
+        subjectsList.add(new Subject("Musica", 60));
+        subjectsList.add(new Subject("Tecnologia", 60));
+        subjectsList.add(new Subject("Informatica", 80));
+        subjectsList.add(new Subject("Geografia", 80));
+        subjectsList.add(new Subject("Filosofia", 100));
+        subjectsList.add(new Subject("Latino", 100));
+        subjectsList.add(new Subject("Greco", 100));
+        subjectsList.add(new Subject("TPS", 80));
+        subjectsList.add(new Subject("Sistemi e reti", 80));
+        subjectsList.add(new Subject("Telecomunicazioni", 80));
     }
 
 
@@ -73,6 +75,16 @@ public class TestsManager {
         }
         printTestsList();
         return testsList;
+    }
+
+    public void loadToDB() {
+        MongoClientConnection mongoClientConnection = new MongoClientConnection();
+        mongoClientConnection.loadCSVToDatabase();
+    }
+
+    public void loadFromDB() {
+        MongoClientConnection mongoClientConnection = new MongoClientConnection();
+        mongoClientConnection.generateCSVFromDatabase();
     }
 
     private void printTestsList() {

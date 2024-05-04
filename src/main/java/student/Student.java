@@ -28,6 +28,10 @@ public class Student {
         return new SimpleStringProperty(name);
     }
 
+    public StringProperty getSurnameProperty() {
+        return new SimpleStringProperty(surname);
+    }
+
     public String getSurname() {
         return surname;
     }
@@ -37,6 +41,11 @@ public class Student {
     }
 
     public Integer getElo() {return elo;}
+
+    public StringProperty getEloProperty() {
+        return new SimpleStringProperty(String.valueOf(elo));
+    }
+
     public void updateElo(Integer value) {
         elo += value;
     }

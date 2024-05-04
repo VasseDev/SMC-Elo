@@ -10,7 +10,7 @@ public class StudentManager {
     private ArrayList<Student> studentsList;
 
     public StudentManager() {
-        Subject subject = new Subject("Matematica", 1);
+        Subject subject = new Subject("Matematica", 100);
         this.studentsList = new ArrayList<>();
         Student student = new Student("John", "Doe");
         student.addTest(new StudentTest(subject, "2024-05-26", new Mark(5.0), 12, 13));
@@ -30,6 +30,14 @@ public class StudentManager {
         Student student6 = new Student("David", "Brown");
         student6.addTest(new StudentTest(subject, "2024-05-26", new Mark(10.0), 12, 13));
         studentsList.add(student6);
+
+        Subject subject2 = new Subject("Fisica", 100);
+        student.addTest(new StudentTest(subject2, "2024-05-27", new Mark(10), 12, 13));
+        student2.addTest(new StudentTest(subject2, "2024-05-27", new Mark(5.0), 12, 13));
+        student3.addTest(new StudentTest(subject2, "2024-05-27", new Mark(7.0), 12, 13));
+        student4.addTest(new StudentTest(subject2, "2024-05-27", new Mark(2.0), 12, 13));
+        student5.addTest(new StudentTest(subject2, "2024-05-27", new Mark(10), 12, 13));
+        student6.addTest(new StudentTest(subject2, "2024-05-27", new Mark(9), 12, 13));
     }
 
     public void addStudent(Student student) {
@@ -45,6 +53,14 @@ public class StudentManager {
             studentsList.remove(student);
         } else {
             System.out.println("Student is null");
+        }
+    }
+
+    public void calculateEloPoints() {
+        for (Student student : studentsList) {
+            for (StudentTest studentTest : student.getTestsList()) {
+                student.updateElo((int) Math.round(studentTest.getMark().getValue() * studentTest.getSubject().getMultiplier()));
+            }
         }
     }
 
