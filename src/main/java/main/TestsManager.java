@@ -1,6 +1,9 @@
-package admin;
+package main;
 
-import admin.db.MongoClientConnection;
+import admin.AdminTest;
+import admin.ConvertDataToCSV;
+import admin.Subject;
+import main.db.MongoClientConnection;
 
 import java.util.ArrayList;
 

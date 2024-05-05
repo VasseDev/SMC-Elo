@@ -7,9 +7,13 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.AnchorPane;
 import login.ui.LoginUIController;
+import main.TestsManager;
 import org.bson.Document;
+import student.Student;
+import student.StudentManager;
+
 import java.util.Optional;
 
 public class MongoClientConnection {
@@ -17,7 +21,7 @@ public class MongoClientConnection {
     private MongoClient mongoClient;
     private MongoDatabase database;
 
-    public void checkLoginCredentials(String username, String password, String loginType, LoginUIController loginUIController) {
+    public void checkLoginCredentials(String username, String password, String loginType, LoginUIController loginUIController, AnchorPane root, StudentManager studentManager) {
         connectionString = DBCredentials.connectionString;
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
@@ -41,7 +45,7 @@ public class MongoClientConnection {
 
         MongoCollection<Document> collection = database.getCollection(loginType + "LoginCredentials");
         if (loginType.equals("Student")) {
-            boolean usernameFound = confirmLogin(username, password, collection, loginUIController);
+            boolean usernameFound = checkUsername(username, collection);
             if (!usernameFound) {
                 javafx.application.Platform.runLater(() -> {
                     System.out.println("User doesn't exist!");
@@ -58,17 +62,38 @@ public class MongoClientConnection {
                             Document newDoc = new Document("username", username)
                                     .append("password", password);
                             collection.insertOne(newDoc);
+                            // Add the new student to the student manager
+                            studentManager.addStudent(new Student(username));
+                            System.out.println("Student added!");
                             System.out.println("Account created successfully!");
                             Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
                             alert2.setTitle("Crea Account");
                             alert2.setContentText("Account creato con successo!");
                             alert2.showAndWait();
+                            javafx.application.Platform.runLater(loginUIController::openStudentDashboard);
+                        } else if (res.get().equals(ButtonType.CANCEL)) {
+                            javafx.application.Platform.runLater(() -> root.setDisable(false));
                         }
                     }
                 });
+                MongoCollection<Document> collection2 = database.getCollection("Students");
+                collection2.insertOne(new Document("name", username)
+                        .append("elo", 0));
+
+            } else if (checkPassword(password, collection)) {
+                javafx.application.Platform.runLater(loginUIController::openStudentDashboard);
+            } else {
+                javafx.application.Platform.runLater(() -> {
+                    System.out.println("Wrong password!");
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Login");
+                    alert.setContentText("Password errata!");
+                    alert.showAndWait();
+                    javafx.application.Platform.runLater(() -> root.setDisable(false));
+                });
             }
         } else {
-            boolean usernameFound = confirmLogin(username, password, collection, loginUIController);
+            boolean usernameFound = checkUsername(username, collection);
             if (!usernameFound) {
                 javafx.application.Platform.runLater(() -> {
                     System.out.println("User doesn't exist!");
@@ -76,30 +101,40 @@ public class MongoClientConnection {
                     alert.setTitle("Login");
                     alert.setContentText("Utente non esistente!");
                     alert.showAndWait();
+                    javafx.application.Platform.runLater(() -> root.setDisable(false));
+                });
+            } else if (checkPassword(password, collection)) {
+                javafx.application.Platform.runLater(loginUIController::openAdminDashboard);
+            } else {
+                javafx.application.Platform.runLater(() -> {
+                    System.out.println("Wrong password!");
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Login");
+                    alert.setContentText("Password errata!");
+                    alert.showAndWait();
+                    javafx.application.Platform.runLater(() -> root.setDisable(false));
                 });
             }
         }
     }
 
-    private boolean confirmLogin(String username, String password, MongoCollection<Document> collection, LoginUIController loginUIController) {
+    private boolean checkUsername(String username, MongoCollection<Document> collection) {
         boolean usernameFound = false;
         for (Document doc : collection.find()) {
             if (doc.get("username").equals(username)) {
                 usernameFound = true;
-                if (doc.get("password").equals(password)) {
-                    javafx.application.Platform.runLater(() -> System.out.println("Login successful!"));
-                    javafx.application.Platform.runLater(loginUIController::openAdminDashboard);
-                } else {
-                    javafx.application.Platform.runLater(() -> {
-                        System.out.println("Password is incorrect!");
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Login");
-                        alert.setContentText("Password errata!");
-                        alert.showAndWait();
-                    });
-                }
             }
         }
         return usernameFound;
+    }
+
+    private boolean checkPassword(String password, MongoCollection<Document> collection) {
+        boolean passwordFound = false;
+        for (Document doc : collection.find()) {
+            if (doc.get("password").equals(password)) {
+                passwordFound = true;
+            }
+        }
+        return passwordFound;
     }
 }

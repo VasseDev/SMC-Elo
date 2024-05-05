@@ -17,7 +17,7 @@
       </Label>
       <TextField fx:id="usernameTextField" layoutX="225.0" layoutY="124.0" />
       <Label layoutX="225.0" layoutY="107.0" text="Username" />
-      <PasswordField fx:id="passwordTextField" layoutX="225.0" layoutY="175.0" />
+      <PasswordField fx:id="passwordTextField" layoutX="225.0" layoutY="175.0" onAction="#onSubmitButtonClick" />
       <Label layoutX="227.0" layoutY="158.0" text="Password" />
       <Button layoutX="273.0" layoutY="285.0" mnemonicParsing="false" onAction="#onSubmitButtonClick" text="Submit" />
       <ChoiceBox fx:id="loginTypeChoiceBox" layoutX="225.0" layoutY="228.0" prefWidth="150.0" />

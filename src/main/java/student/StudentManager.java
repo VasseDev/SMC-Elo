@@ -1,8 +1,6 @@
 package student;
 
-import admin.AdminTest;
 import admin.Subject;
-import admin.TestsManager;
 
 import java.util.ArrayList;
 
@@ -12,22 +10,22 @@ public class StudentManager {
     public StudentManager() {
         Subject subject = new Subject("Matematica", 100);
         this.studentsList = new ArrayList<>();
-        Student student = new Student("John", "Doe");
+        Student student = new Student("John");
         student.addTest(new StudentTest(subject, "2024-05-26", new Mark(5.0), 12, 13));
         studentsList.add(student);
-        Student student2 = new Student("Jane", "Doe");
+        Student student2 = new Student("Jane");
         student2.addTest(new StudentTest(subject, "2024-05-26", new Mark(6.0), 12, 13));
         studentsList.add(student2);
-        Student student3 = new Student("Alice", "Smith");
+        Student student3 = new Student("Alice");
         student3.addTest(new StudentTest(subject, "2024-05-26", new Mark(7.0), 12, 13));
         studentsList.add(student3);
-        Student student4 = new Student("Bob", "Smith");
+        Student student4 = new Student("Bob");
         student4.addTest(new StudentTest(subject, "2024-05-26", new Mark(8.0), 12, 13));
         studentsList.add(student4);
-        Student student5 = new Student("Charlie", "Brown");
+        Student student5 = new Student("Charlie");
         student5.addTest(new StudentTest(subject, "2024-05-26", new Mark(9.0), 12, 13));
         studentsList.add(student5);
-        Student student6 = new Student("David", "Brown");
+        Student student6 = new Student("David");
         student6.addTest(new StudentTest(subject, "2024-05-26", new Mark(10.0), 12, 13));
         studentsList.add(student6);
 

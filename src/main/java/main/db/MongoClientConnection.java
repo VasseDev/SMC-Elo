@@ -1,4 +1,4 @@
-package admin.db;
+package main.db;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -10,6 +10,8 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import student.Student;
+import student.StudentManager;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -42,7 +44,7 @@ public class MongoClientConnection {
             e.printStackTrace();
         }
 
-        MongoCollection<Document> collection = database.getCollection("students");
+        MongoCollection<Document> collection = database.getCollection("Tests");
 
         try (BufferedReader br = new BufferedReader(new FileReader("test.csv"))) {
             String line;
@@ -119,7 +121,7 @@ public class MongoClientConnection {
             e.printStackTrace();
         }
 
-        MongoCollection<Document> collection = database.getCollection("students");
+        MongoCollection<Document> collection = database.getCollection("Tests");
 
         try {
             // Overwrite the file with a new FileWriter
@@ -142,6 +144,38 @@ public class MongoClientConnection {
             e.printStackTrace();
         } finally {
             mongoClient.close();
+        }
+    }
+
+    public void importStudentList(StudentManager studentManager) {
+        connectionString = DBCredentials.connectionString;
+
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
+                .build();
+
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(connectionString))
+                .serverApi(serverApi)
+                .build();
+
+        // Create a new client and connect to the server
+        mongoClient = MongoClients.create(settings);
+        try {
+            // Send a ping to confirm a successful connection
+            database = mongoClient.getDatabase("StudentsDB");
+            database.runCommand(new Document("ping", 1));
+            System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+
+        MongoCollection<Document> collection = database.getCollection("Students");
+
+        // Write data lines
+        studentManager.getStudentsList().clear();
+        for (Document doc : collection.find()) {
+            studentManager.addStudent(new Student(doc.get("name").toString()));
         }
     }
 }

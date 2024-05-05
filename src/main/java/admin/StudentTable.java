@@ -26,10 +26,6 @@ public class StudentTable {
         return student.getNameProperty();
     }
 
-    public StringProperty getSurnameProperty() {
-        return student.getSurnameProperty();
-    }
-
     public StringProperty getMarkProperty() {
         if (this.test != null) {
             return this.test.getMarkProperty();

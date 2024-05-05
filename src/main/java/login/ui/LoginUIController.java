@@ -1,17 +1,17 @@
 package login.ui;
 
+import main.TestsManager;
+import admin.ui.AdminUiController;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import login.db.MongoClientConnection;
+import student.StudentManager;
 
 import java.io.IOException;
 
@@ -23,10 +23,14 @@ public class LoginUIController {
     @FXML
     ChoiceBox<String> loginTypeChoiceBox;
 
+    private Stage stage;
+    private StudentManager studentManager;
+
     @FXML
     private void initialize() {
         loginTypeChoiceBox.getItems().addAll("Admin", "Student");
         loginTypeChoiceBox.setValue("Student");
+        studentManager = new StudentManager();
     }
 
     public void onSubmitButtonClick() {
@@ -42,7 +46,7 @@ public class LoginUIController {
             @Override
             protected Void call() throws Exception {
                 MongoClientConnection mongoClientConnection = new MongoClientConnection();
-                mongoClientConnection.checkLoginCredentials(username, password, loginType, LoginUIController.this);
+                mongoClientConnection.checkLoginCredentials(username, password, loginType, LoginUIController.this, root, studentManager);
                 return null;
             }
         };
@@ -60,7 +64,29 @@ public class LoginUIController {
             Scene scene = new Scene(root);
 
             // Get the current stage and set the new scene
-            Stage stage = (Stage) usernameTextField.getScene().getWindow();
+            stage = (Stage) usernameTextField.getScene().getWindow();
+            stage.setScene(scene);
+
+            // Get the controller of the admin page
+            AdminUiController adminController = fxmlLoader.getController();
+            adminController.setStage(stage); // Set the stage in adminController
+            stage.setOnCloseRequest(adminController::closeWindowEvent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void openStudentDashboard() {
+        try {
+            // Load the new FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/student/ui/studentUI.fxml"));
+            Parent root = fxmlLoader.load();
+
+            // Create a new scene with the root node
+            Scene scene = new Scene(root);
+
+            // Get the current stage and set the new scene
+            stage = (Stage) usernameTextField.getScene().getWindow();
             stage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();

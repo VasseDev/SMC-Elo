@@ -1,6 +1,5 @@
 package student;
 
-import admin.AdminTest;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -9,13 +8,11 @@ import java.util.List;
 
 public class Student {
     private String name;
-    private String surname;
     private ArrayList<StudentTest> testsList;
     private Integer elo;
 
-    public Student(String name, String surname) {
+    public Student(String name) {
         this.name = name;
-        this.surname = surname;
         this.elo = 0;
         this.testsList = new ArrayList<>();
     }
@@ -26,14 +23,6 @@ public class Student {
 
     public StringProperty getNameProperty() {
         return new SimpleStringProperty(name);
-    }
-
-    public StringProperty getSurnameProperty() {
-        return new SimpleStringProperty(surname);
-    }
-
-    public String getSurname() {
-        return surname;
     }
 
     public List<StudentTest> getTestsList() {
