@@ -15,29 +15,21 @@ import java.util.Optional;
 
 public class MainApp extends Application {
     private Stage primaryStage;
-    private AdminUiController mainController;
-    private boolean dayPage;
     TestsManager testsManager;
-
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
-        loadFXML("loginUI.fxml");
+        loadFXML("/login/ui/loginUI.fxml");
     }
 
     private void loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/login/ui/" + fxml)); // Create a new FXMLLoader
+        FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource(fxml)); // Create a new FXMLLoader
         Scene scene = new Scene(fxmlLoader.load()); // Load the scene
         primaryStage.setTitle("SMC"); // Set the title of the stage
         primaryStage.setScene(scene); // Set the scene of the stage
         primaryStage.setResizable(false); // Make the stage non-resizable (pd)
         primaryStage.show(); // Show the stage
-
-        //testsManager = new TestsManager();
-
-        //AdminUiController adminUiController = fxmlLoader.getController(); // Get the controller of the FXML
-        //adminUiController.setMainModel(testsManager); // Set the model of the controller
 
         primaryStage.setOnCloseRequest(this::closeWindowEvent); // Set the close window event
     }
@@ -53,6 +45,7 @@ public class MainApp extends Application {
         alert.initOwner(primaryStage.getOwner());
         Optional<ButtonType> res = alert.showAndWait();
 
+        // TODO
         testsManager.loadToDB();
 
         if(res.isPresent()) {

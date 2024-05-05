@@ -7,6 +7,7 @@ module com.manager.smc {
 
     requires org.kordamp.bootstrapfx.core;
     requires com.calendarfx.view;
+    requires jdk.incubator.vector;
 
     opens login.ui to javafx.fxml;
 

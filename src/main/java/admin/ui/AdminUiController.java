@@ -67,7 +67,7 @@ public class AdminUiController {
 
     @FXML
     private void initialize() {
-
+        System.out.println("AdminUiController initialized");
         // Initialize the testsManager and studentManager
         this.testsManager = new TestsManager();
         this.studentManager = new StudentManager();
@@ -135,7 +135,7 @@ public class AdminUiController {
     }
 
     // Set the testsManager
-    void setMainModel(TestsManager testsManager) {
+    public void setMainModel(TestsManager testsManager) {
         this.testsManager = testsManager;
     }
 
@@ -155,7 +155,7 @@ public class AdminUiController {
     );
 
     // Show the details of the events in the calendar
-    private void showEventDetails() {
+    public void showEventDetails() {
         List<Entry<?>> entries = calendar.findEntries("");
         for (Entry<?> entry : entries) {
             EntryViewBase<?> entryViewBase = calendarView.findEntryView(entry);

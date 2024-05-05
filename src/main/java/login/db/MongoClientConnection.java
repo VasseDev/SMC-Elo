@@ -7,9 +7,9 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ProgressIndicator;
+import login.ui.LoginUIController;
 import org.bson.Document;
-
-import java.io.IOException;
 import java.util.Optional;
 
 public class MongoClientConnection {
@@ -17,7 +17,7 @@ public class MongoClientConnection {
     private MongoClient mongoClient;
     private MongoDatabase database;
 
-    public void checkLoginCredentials(String username, String password, String loginType) {
+    public void checkLoginCredentials(String username, String password, String loginType, LoginUIController loginUIController) {
         connectionString = DBCredentials.connectionString;
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
@@ -40,49 +40,66 @@ public class MongoClientConnection {
         }
 
         MongoCollection<Document> collection = database.getCollection(loginType + "LoginCredentials");
+        if (loginType.equals("Student")) {
+            boolean usernameFound = confirmLogin(username, password, collection, loginUIController);
+            if (!usernameFound) {
+                javafx.application.Platform.runLater(() -> {
+                    System.out.println("User doesn't exist!");
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.getButtonTypes().remove(ButtonType.OK);
+                    alert.getButtonTypes().add(ButtonType.CANCEL);
+                    alert.getButtonTypes().add(ButtonType.YES);
+                    alert.setTitle("Crea Account");
+                    alert.setContentText("Account non esistente. Vuoi creare un nuovo profilo con le credenziali inserite?");
+                    Optional<ButtonType> res = alert.showAndWait();
 
+                    if (res.isPresent()) {
+                        if (res.get().equals(ButtonType.YES)) {
+                            Document newDoc = new Document("username", username)
+                                    .append("password", password);
+                            collection.insertOne(newDoc);
+                            System.out.println("Account created successfully!");
+                            Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
+                            alert2.setTitle("Crea Account");
+                            alert2.setContentText("Account creato con successo!");
+                            alert2.showAndWait();
+                        }
+                    }
+                });
+            }
+        } else {
+            boolean usernameFound = confirmLogin(username, password, collection, loginUIController);
+            if (!usernameFound) {
+                javafx.application.Platform.runLater(() -> {
+                    System.out.println("User doesn't exist!");
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Login");
+                    alert.setContentText("Utente non esistente!");
+                    alert.showAndWait();
+                });
+            }
+        }
+    }
+
+    private boolean confirmLogin(String username, String password, MongoCollection<Document> collection, LoginUIController loginUIController) {
         boolean usernameFound = false;
         for (Document doc : collection.find()) {
             if (doc.get("username").equals(username)) {
                 usernameFound = true;
                 if (doc.get("password").equals(password)) {
-                    System.out.println("Login successful!");
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Login");
-                    alert.setContentText("Login effettuato con successo!");
-                    alert.showAndWait();
+                    javafx.application.Platform.runLater(() -> System.out.println("Login successful!"));
+                    javafx.application.Platform.runLater(loginUIController::openAdminDashboard);
                 } else {
-                    System.out.println("Password is incorrect!");
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Login");
-                    alert.setContentText("Password errata!");
-                    alert.showAndWait();
+                    javafx.application.Platform.runLater(() -> {
+                        System.out.println("Password is incorrect!");
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Login");
+                        alert.setContentText("Password errata!");
+                        alert.showAndWait();
+                    });
                 }
             }
         }
-
-        if (!usernameFound) {
-            System.out.println("User doesn't exist!");
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.getButtonTypes().remove(ButtonType.OK);
-            alert.getButtonTypes().add(ButtonType.CANCEL);
-            alert.getButtonTypes().add(ButtonType.YES);
-            alert.setTitle("Crea Account");
-            alert.setContentText("Account non esistente. Vuoi creare un nuovo profilo con le credenziali inserite?");
-            Optional<ButtonType> res = alert.showAndWait();
-
-            if (res.isPresent()) {
-                if (res.get().equals(ButtonType.YES)) {
-                    Document newDoc = new Document("username", username)
-                            .append("password", password);
-                    collection.insertOne(newDoc);
-                    System.out.println("Account created successfully!");
-                    Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
-                    alert2.setTitle("Crea Account");
-                    alert2.setContentText("Account creato con successo!");
-                    alert2.showAndWait();
-                }
-            }
-        }
+        return usernameFound;
     }
 }

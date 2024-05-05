@@ -67,16 +67,6 @@ public class TestsManager {
         }
     }
 
-    public boolean findInTestList(String subject, String date, int initialHour, int finalHour) {
-        for (AdminTest test : testsList) {
-            if (test.getSubject().getName().equals(subject) && test.getDate().equals(date)
-                    && test.getInitialHour() == initialHour && test.getFinalHour() == finalHour) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void saveToCSV() {
         try {
             ConvertDataToCSV.write(testsList);
