@@ -31,6 +31,10 @@ public class StudentTable {
     }
 
     public StringProperty getMarkProperty() {
-        return test.getMarkProperty();
+        if (this.test != null) {
+            return this.test.getMarkProperty();
+        } else {
+            return new SimpleStringProperty("");
+        }
     }
 }

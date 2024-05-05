@@ -1,4 +1,4 @@
-package database;
+package admin.db;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -20,13 +20,8 @@ public class MongoClientConnection {
     private MongoClient mongoClient;
     private MongoDatabase database;
 
-    public void run() {
-
-    }
-
     public void loadCSVToDatabase() {
-        connectionString = "mongodb+srv://pietrovassena01234:@cluster0.gc7scpm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
+        connectionString = DBCredentials.connectionString;
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
                 .build();
@@ -63,7 +58,7 @@ public class MongoClientConnection {
                 testsInCSV.add(doc);
             }
 
-            // Delete tests from the database that have been deleted locally
+            // Delete tests from the admin.database that have been deleted locally
             for (Document doc : collection.find()) {
                 boolean found = false;
                 for (Document testInCSV : testsInCSV) {
@@ -80,7 +75,7 @@ public class MongoClientConnection {
                 }
             }
 
-            // Insert new tests into the database
+            // Insert new tests into the admin.database
             for (Document testInCSV : testsInCSV) {
                 Document query = new Document();
                 query.append("Subject", testInCSV.get("Subject"));
@@ -89,7 +84,7 @@ public class MongoClientConnection {
                 query.append("Final Hour", testInCSV.get("Final Hour"));
                 Document existingTest = collection.find(query).first();
 
-                // If the test is not in the database, insert it
+                // If the test is not in the admin.database, insert it
                 if (existingTest == null) {
                     collection.insertOne(testInCSV);
                 }
@@ -102,7 +97,7 @@ public class MongoClientConnection {
     }
 
     public void generateCSVFromDatabase() {
-        connectionString = "mongodb+srv://pietrovassena01234:GQbytNCE0hi2UMR4@cluster0.gc7scpm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+        connectionString = DBCredentials.connectionString;
 
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)

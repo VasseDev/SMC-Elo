@@ -1,12 +1,12 @@
 package admin;
 
-import database.MongoClientConnection;
+import admin.db.MongoClientConnection;
 
 import java.util.ArrayList;
 
 public class TestsManager {
-    ArrayList<AdminTest> testsList;
-    ArrayList<Subject> subjectsList;
+    private ArrayList<AdminTest> testsList;
+    private ArrayList<Subject> subjectsList;
     
     public TestsManager() {
         this.testsList = new ArrayList<AdminTest>();
@@ -47,14 +47,34 @@ public class TestsManager {
                 }
 
                 testsList.add(adminTest);
-                System.out.println("Test added");
-                System.out.println("Subject: " + s.getName());
-                System.out.println("Date: " + date);
-                System.out.println("Initial Hour: " + initialHour);
-                System.out.println("Final Hour: " + finalHour);
                 return;
             }
         }
+    }
+
+    public void removeTest(String subject, String date, int initialHour, int finalHour) {
+        AdminTest toRemove = null;
+        for (AdminTest test : testsList) {
+            if (test.getSubject().getName().equals(subject) && test.getDate().equals(date)
+                    && test.getInitialHour() == initialHour && test.getFinalHour() == finalHour) {
+                toRemove = test;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            testsList.remove(toRemove);
+            System.out.println("Test removed from list");
+        }
+    }
+
+    public boolean findInTestList(String subject, String date, int initialHour, int finalHour) {
+        for (AdminTest test : testsList) {
+            if (test.getSubject().getName().equals(subject) && test.getDate().equals(date)
+                    && test.getInitialHour() == initialHour && test.getFinalHour() == finalHour) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void saveToCSV() {
@@ -64,7 +84,6 @@ public class TestsManager {
             // create file
 
         }
-        printTestsList();
     }
 
     public ArrayList<AdminTest> readFromCSV() {
@@ -73,7 +92,6 @@ public class TestsManager {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        printTestsList();
         return testsList;
     }
 
@@ -87,12 +105,7 @@ public class TestsManager {
         mongoClientConnection.generateCSVFromDatabase();
     }
 
-    private void printTestsList() {
-        for (AdminTest t : testsList) {
-            System.out.println("Subject: " + t.getSubject().getName());
-            System.out.println("Date: " + t.getDate());
-            System.out.println("Initial Hour: " + t.getInitialHour());
-            System.out.println("Final Hour: " + t.getFinalHour());
-        }
+    public ArrayList<AdminTest> getTestsList() {
+        return testsList;
     }
 }

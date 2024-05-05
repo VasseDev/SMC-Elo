@@ -20,7 +20,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import admin.TestsManager;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import student.Student;
@@ -31,7 +30,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainUiController {
+public class AdminUiController {
 
     // Declare necessary variables
     private TestsManager testsManager;
@@ -160,8 +159,6 @@ public class MainUiController {
         List<Entry<?>> entries = calendar.findEntries("");
         for (Entry<?> entry : entries) {
             EntryViewBase<?> entryViewBase = calendarView.findEntryView(entry);
-            System.out.println("ciao " + entry.getTitle() + " " + entry.getStartDate() + " " + entry.getStartTime() + " " + entry.getEndTime());
-            System.out.println("ciao " + entryViewBase);
 
             if (entryViewBase != null) {
                 // Add a mouse click event handler to the EntryViewBase
@@ -175,11 +172,28 @@ public class MainUiController {
                     studentTableView.setItems(studentsObservableList);
                 });
             }
+
+            ArrayList<AdminTest> copyOfTestList = new ArrayList<>(testsManager.getTestsList());
+            for (AdminTest test : copyOfTestList) {
+                if (!findEntry(test.getSubject().getName(), test.getDate(), test.getInitialHour(), test.getFinalHour())) {
+                    testsManager.removeTest(test.getSubject().getName(), test.getDate(), test.getInitialHour(), test.getFinalHour());
+                }
+            }
+
             // Add the test to the testsManager and save it to the CSV file
             testsManager.addTest(entry.getTitle(), entry.getStartDate().toString(), entry.getStartTime().getHour(), entry.getEndTime().getHour());
-            System.out.println("\nSaved to CSV");
             testsManager.saveToCSV();
         }
+    }
+
+    private boolean findEntry(String title, String date, int initialHour, int finalHour) {
+        for (Object entry : calendar.findEntries(title)) {
+            Entry entryCasted = (Entry<?>) entry;
+            if (entryCasted.getStartDate().toString().equals(date) && entryCasted.getStartTime().getHour() == initialHour && entryCasted.getEndTime().getHour() == finalHour) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @FXML
