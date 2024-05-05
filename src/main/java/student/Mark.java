@@ -1,6 +1,6 @@
-package model;
+package student;
 
-import java.util.List;
+import javafx.beans.property.StringProperty;
 
 public class Mark {
     private double value;

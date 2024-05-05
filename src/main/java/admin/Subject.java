@@ -1,4 +1,4 @@
-package model;
+package admin;
 
 public class Subject {
     private String name;

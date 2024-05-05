@@ -33,18 +33,23 @@
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>${junit.version}</version>
-      <scope>test</scope>
+      <scope>adminTest</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.version}</version>
-      <scope>test</scope>
+      <scope>adminTest</scope>
     </dependency>
     <dependency>
       <groupId>com.calendarfx</groupId>
       <artifactId>view</artifactId>
       <version>11.12.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongodb-driver-sync</artifactId>
+      <version>5.1.0</version>
     </dependency>
   </dependencies>
 
