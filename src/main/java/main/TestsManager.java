@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class TestsManager {
     private ArrayList<AdminTest> testsList;
     private ArrayList<Subject> subjectsList;
-    
+
     public TestsManager() {
         this.testsList = new ArrayList<AdminTest>();
         this.subjectsList = new ArrayList<Subject>();
@@ -100,5 +100,33 @@ public class TestsManager {
 
     public ArrayList<AdminTest> getTestsList() {
         return testsList;
+    }
+
+    public Subject getSubject(String name) {
+        for (Subject s : subjectsList) {
+            if (s.getName().equalsIgnoreCase(name)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public double convertGrade(String grade) {
+        // split string in two parts
+        String[] parts = grade.split("");
+        // check if the grade is a number
+        if (parts.length == 1) {
+            return Double.parseDouble(grade);
+        } else {
+            // check if the grade is a number with a comma
+            if (parts[1].equals("½")) {
+                return Double.parseDouble(parts[0]) + 0.5;
+            } else if (parts[1].equals("+")) {
+                return Double.parseDouble(parts[0]) + 0.25;
+            } else if (parts[1].equals("-")) {
+                return Double.parseDouble(parts[0]) - 0.25;
+            }
+        }
+        return 0;
     }
 }

@@ -11,7 +11,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import login.db.MongoClientConnection;
+import student.Student;
 import student.StudentManager;
+import student.ui.StudentUIController;
 
 import java.io.IOException;
 
@@ -78,6 +80,8 @@ public class LoginUIController {
 
     public void openStudentDashboard() {
         try {
+            main.db.MongoClientConnection mongoClientConnection = new main.db.MongoClientConnection();
+            mongoClientConnection.importStudentList(studentManager);
             // Load the new FXML file
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/student/ui/studentUI.fxml"));
             Parent root = fxmlLoader.load();
@@ -88,6 +92,13 @@ public class LoginUIController {
             // Get the current stage and set the new scene
             stage = (Stage) usernameTextField.getScene().getWindow();
             stage.setScene(scene);
+
+            Student student = studentManager.findStudent(usernameTextField.getText());
+            System.out.println(student);
+            // set the main student
+            StudentUIController controller = fxmlLoader.getController();
+            controller.setCurrentStudent(student);
+            controller.setMainModel(studentManager);
         } catch (IOException e) {
             e.printStackTrace();
         }

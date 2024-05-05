@@ -41,6 +41,14 @@ public class Student {
 
     public void addTest(StudentTest studentTest) {
         if (studentTest != null) {
+            // check if the test is already in the list
+            for (StudentTest test : testsList) {
+                if (test.getSubject().getName().equalsIgnoreCase(studentTest.getSubject().getName()) && test.getDate().equals(studentTest.getDate())) {
+                    testsList.remove(test);
+                    testsList.add(studentTest);
+                    return;
+                }
+            }
             testsList.add(studentTest);
         } else {
             System.out.println("Test is null");

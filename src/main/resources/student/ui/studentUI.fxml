@@ -11,7 +11,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="841.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="student.ui.studentUIController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="841.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="student.ui.StudentUIController">
    <children>
       <TabPane prefHeight="539.0" prefWidth="841.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -40,7 +40,7 @@
                                  <children>
                                     <Label layoutX="32.0" layoutY="260.0" text="Voto" />
                                     <ComboBox fx:id="gradeComboBox" layoutX="64.0" layoutY="256.0" prefHeight="25.0" prefWidth="90.0" />
-                                    <Button layoutX="64.0" layoutY="293.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="90.0" text="Aggiungi" />
+                                    <Button layoutX="64.0" layoutY="293.0" mnemonicParsing="false" onAction="#onAddButtonClicked" prefHeight="25.0" prefWidth="90.0" text="Aggiungi" />
                                     <Label layoutX="32.0" layoutY="125.0" text="Materia" />
                                     <TextField fx:id="subjectTextField" editable="false" layoutX="32.0" layoutY="142.0" prefHeight="25.0" prefWidth="127.0" />
                                     <Label layoutX="32.0" layoutY="173.0" text="Data" />

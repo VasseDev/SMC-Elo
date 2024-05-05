@@ -1,13 +1,13 @@
 package student.ui;
 
 import admin.AdminTest;
+import admin.Subject;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
-import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.TestsManager;
 import com.calendarfx.model.Calendar;
@@ -21,15 +21,17 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import main.db.MongoClientConnection;
+import student.Mark;
 import student.Student;
 import student.StudentManager;
+import student.StudentTest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class studentUIController {
+public class StudentUIController {
     @FXML
     private SplitPane mySplitPane;
     @FXML
@@ -50,7 +52,7 @@ public class studentUIController {
     @FXML
     private TableColumn<Student, String> studentRankingEloColumn;
 
-
+    private Student student;
     private TestsManager testsManager;
     private StudentManager studentManager;
     private Calendar calendar;
@@ -59,10 +61,9 @@ public class studentUIController {
 
     @FXML
     private void initialize() {
-        System.out.println("AdminUiController initialized");
+        System.out.println("StudentUiController initialized");
         // Initialize the testsManager and studentManager
         this.testsManager = new TestsManager();
-        this.studentManager = new StudentManager();
 
         // Initialize the studentRankingObservableList and set it as the items of the studentRankingTableView
         studentRankingObservableList = FXCollections.observableArrayList();
@@ -149,6 +150,14 @@ public class studentUIController {
         )
     );
 
+    public void setMainModel(StudentManager studentManager) {
+        this.studentManager = studentManager;
+    }
+
+    public void setCurrentStudent(Student student) {
+        this.student = student;
+    }
+
     // Show the details of the events in the calendar
     public void showEventDetails() {
         List<Entry<?>> entries = calendar.findEntries("");
@@ -163,5 +172,20 @@ public class studentUIController {
                 });
             }
         }
+    }
+
+    @FXML
+    private void onAddButtonClicked() {
+        String subjectName = subjectTextField.getText();
+        Subject subject = testsManager.getSubject(subjectName);
+        String date = dateTextField.getText();
+        String gradeString = gradeComboBox.getValue();
+        if (subject == null || date.isEmpty() || gradeString == null) {
+            System.out.println("Invalid input");
+            return;
+        }
+        double grade = testsManager.convertGrade(gradeString);
+        student.addTest(new StudentTest(subject, date, new Mark(grade), 12, 13));
+        System.out.println("Test added");
     }
 }

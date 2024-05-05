@@ -5,13 +5,11 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
 import com.mongodb.ServerApi;
 import com.mongodb.ServerApiVersion;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import org.bson.Document;
 import student.Student;
 import student.StudentManager;
+import student.StudentTest;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -177,5 +175,58 @@ public class MongoClientConnection {
         for (Document doc : collection.find()) {
             studentManager.addStudent(new Student(doc.get("name").toString()));
         }
+
+        // Close the client
+        mongoClient.close();
+    }
+
+    public void exportStudentTests(Student student) {
+        connectionString = DBCredentials.connectionString;
+
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
+                .build();
+
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(connectionString))
+                .serverApi(serverApi)
+                .build();
+
+        // Create a new client and connect to the server
+        mongoClient = MongoClients.create(settings);
+        try {
+            // Send a ping to confirm a successful connection
+            database = mongoClient.getDatabase("StudentsDB");
+            database.runCommand(new Document("ping", 1));
+            System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+
+        MongoCollection<Document> collection = database.getCollection("Students");
+
+        // Write data lines
+        FindIterable<Document> copyDocuments = collection.find();
+        for (Document doc : copyDocuments) {
+            if (doc.get("name").equals(student.getName())) {
+                collection.deleteOne(doc);
+                Document newDoc = new Document();
+                newDoc.append("name", student.getName());
+                List<Document> tests = new ArrayList<>();
+                for (StudentTest studentTest : student.getTestsList()) {
+                    Document test = new Document();
+                    test.append("Subject", studentTest.getSubject().getName());
+                    test.append("Date", studentTest.getDate());
+                    test.append("Grade", studentTest.getMark());
+                    tests.add(test);
+                }
+                newDoc.append("Tests", tests);
+                collection.insertOne(newDoc);
+                break;
+            }
+        }
+
+        // Close the client
+        mongoClient.close();
     }
 }
