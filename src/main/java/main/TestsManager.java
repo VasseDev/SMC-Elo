@@ -7,10 +7,18 @@ import main.db.MongoClientConnection;
 
 import java.util.ArrayList;
 
+/**
+ * TestsManager is a class that manages the tests and subjects in the system.
+ * It provides methods to add and remove tests, save and load tests to and from a CSV file, and load tests to and from a MongoDB database.
+ * It also provides a method to convert a grade from a string to a double.
+ */
 public class TestsManager {
     private ArrayList<AdminTest> testsList;
     private ArrayList<Subject> subjectsList;
 
+    /**
+     * Constructs a new TestsManager and initializes the subjects list with predefined subjects.
+     */
     public TestsManager() {
         this.testsList = new ArrayList<AdminTest>();
         this.subjectsList = new ArrayList<Subject>();
@@ -34,7 +42,14 @@ public class TestsManager {
         subjectsList.add(new Subject("Telecomunicazioni", 80));
     }
 
-
+    /**
+     * Adds a test to the tests list.
+     *
+     * @param subject the subject of the test
+     * @param date the date of the test
+     * @param initialHour the initial hour of the test
+     * @param finalHour the final hour of the test
+     */
     public void addTest(String subject, String date, int initialHour, int finalHour) {
         for (Subject s : subjectsList) {
             if (s.getName().equalsIgnoreCase(subject)) {
@@ -55,6 +70,14 @@ public class TestsManager {
         }
     }
 
+    /**
+     * Removes a test from the tests list.
+     *
+     * @param subject the subject of the test
+     * @param date the date of the test
+     * @param initialHour the initial hour of the test
+     * @param finalHour the final hour of the test
+     */
     public void removeTest(String subject, String date, int initialHour, int finalHour) {
         AdminTest toRemove = null;
         for (AdminTest test : testsList) {
@@ -70,6 +93,9 @@ public class TestsManager {
         }
     }
 
+    /**
+     * Saves the tests list to a CSV file.
+     */
     public void saveToCSV() {
         try {
             ConvertDataToCSV.write(testsList);
@@ -79,6 +105,11 @@ public class TestsManager {
         }
     }
 
+    /**
+     * Reads the tests list from a CSV file.
+     *
+     * @return the tests list
+     */
     public ArrayList<AdminTest> readFromCSV() {
         try {
             testsList = ConvertDataToCSV.read("test.csv", subjectsList);
@@ -88,20 +119,37 @@ public class TestsManager {
         return testsList;
     }
 
+    /**
+     * Loads the tests list to a MongoDB database.
+     */
     public void loadToDB() {
         MongoClientConnection mongoClientConnection = new MongoClientConnection();
         mongoClientConnection.loadCSVToDatabase();
     }
 
+    /**
+     * Loads the tests list from a MongoDB database.
+     */
     public void loadFromDB() {
         MongoClientConnection mongoClientConnection = new MongoClientConnection();
         mongoClientConnection.generateCSVFromDatabase();
     }
 
+    /**
+     * Returns the tests list.
+     *
+     * @return the tests list
+     */
     public ArrayList<AdminTest> getTestsList() {
         return testsList;
     }
 
+    /**
+     * Returns the subject with the specified name.
+     *
+     * @param name the name of the subject
+     * @return the subject with the specified name
+     */
     public Subject getSubject(String name) {
         for (Subject s : subjectsList) {
             if (s.getName().equalsIgnoreCase(name)) {
@@ -111,6 +159,12 @@ public class TestsManager {
         return null;
     }
 
+    /**
+     * Converts a grade from a string to a double.
+     *
+     * @param grade the grade as a string
+     * @return the grade as a double
+     */
     public double convertGrade(String grade) {
         // split string in two parts
         String[] parts = grade.split("");
@@ -125,6 +179,11 @@ public class TestsManager {
                 return Double.parseDouble(parts[0]) + 0.25;
             } else if (parts[1].equals("-")) {
                 return Double.parseDouble(parts[0]) - 0.25;
+            } else if (parts[1].equals("0")) {
+                if (parts.length > 2) {
+                    return Double.parseDouble(parts[0] + parts[1]) - 0.25;
+                }
+                return Double.parseDouble(parts[0] + parts[1]);
             }
         }
         return 0;

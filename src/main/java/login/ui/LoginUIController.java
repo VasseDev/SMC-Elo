@@ -17,6 +17,10 @@ import student.ui.StudentUIController;
 
 import java.io.IOException;
 
+/**
+ * LoginUIController is the controller class for the login UI.
+ * It handles user interactions with the login form and manages the login process.
+ */
 public class LoginUIController {
     @FXML
     TextField usernameTextField;
@@ -28,6 +32,10 @@ public class LoginUIController {
     private Stage stage;
     private StudentManager studentManager;
 
+    /**
+     * Initializes the login UI controller.
+     * It sets the default login type and initializes the student manager.
+     */
     @FXML
     private void initialize() {
         loginTypeChoiceBox.getItems().addAll("Admin", "Student");
@@ -35,6 +43,11 @@ public class LoginUIController {
         studentManager = new StudentManager();
     }
 
+    /**
+     * Handles the click event of the submit button.
+     * It disables the root pane, retrieves the entered username, password, and login type,
+     * and starts a new task to check the login credentials.
+     */
     public void onSubmitButtonClick() {
         // Disable the root pane
         AnchorPane root = (AnchorPane) usernameTextField.getScene().getRoot();
@@ -56,6 +69,11 @@ public class LoginUIController {
         new Thread(task).start();
     }
 
+    /**
+     * Opens the admin dashboard.
+     * It loads the admin UI, creates a new scene with the loaded root node, sets the new scene on the current stage,
+     * and sets the stage in the admin controller.
+     */
     public void openAdminDashboard() {
         try {
             // Load the new FXML file
@@ -78,6 +96,11 @@ public class LoginUIController {
         }
     }
 
+    /**
+     * Opens the student dashboard.
+     * It imports the student list, loads the student UI, creates a new scene with the loaded root node,
+     * sets the new scene on the current stage, finds the logged-in student, and sets the current student in the student controller.
+     */
     public void openStudentDashboard() {
         try {
             main.db.MongoClientConnection mongoClientConnection = new main.db.MongoClientConnection();
@@ -94,7 +117,6 @@ public class LoginUIController {
             stage.setScene(scene);
 
             Student student = studentManager.findStudent(usernameTextField.getText());
-            System.out.println(student);
             // set the main student
             StudentUIController controller = fxmlLoader.getController();
             controller.setMainModel(studentManager); // Ensure this is called before setCurrentStudent

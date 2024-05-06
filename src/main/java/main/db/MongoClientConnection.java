@@ -21,11 +21,18 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * MongoClientConnection is a utility class that provides methods to connect to a MongoDB database and perform various operations.
+ * It handles tasks such as loading CSV data to the database, generating CSV data from the database, importing student list, and exporting student data.
+ */
 public class MongoClientConnection {
     private String connectionString;
     private MongoClient mongoClient;
     private MongoDatabase database;
 
+    /**
+     * Loads CSV data to the MongoDB database.
+     */
     public void loadCSVToDatabase() {
         connectionString = DBCredentials.connectionString;
         ServerApi serverApi = ServerApi.builder()
@@ -102,6 +109,9 @@ public class MongoClientConnection {
         }
     }
 
+    /**
+     * Generates CSV data from the MongoDB database.
+     */
     public void generateCSVFromDatabase() {
         connectionString = DBCredentials.connectionString;
 
@@ -151,6 +161,12 @@ public class MongoClientConnection {
         }
     }
 
+    /**
+     * Imports the student list from the MongoDB database.
+     *
+     * @param studentManager the manager of the students
+     * @param testsManager the manager of the tests
+     */
     public void importStudentList(StudentManager studentManager, TestsManager testsManager) {
         connectionString = DBCredentials.connectionString;
 
@@ -206,6 +222,11 @@ public class MongoClientConnection {
         mongoClient.close();
     }
 
+    /**
+     * Exports a student's data to the MongoDB database.
+     *
+     * @param student the student whose data is to be exported
+     */
     public void exportStudent(Student student) {
         connectionString = DBCredentials.connectionString;
 

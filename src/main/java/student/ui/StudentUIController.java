@@ -31,7 +31,13 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentUIController {
+/**
+ * StudentUIController is the controller class for the student UI.
+ * It handles user interactions with the student dashboard and manages the display of student data.
+ * It uses JavaFX for the UI and MongoDB for the database operations.
+ */
+ public class StudentUIController {
+    // FXML annotated fields for UI elements
     @FXML
     private SplitPane mySplitPane;
     @FXML
@@ -52,18 +58,24 @@ public class StudentUIController {
     @FXML
     private TableColumn<Student, String> studentRankingEloColumn;
 
+    // Other fields
     private Student student;
     private TestsManager testsManager;
     private StudentManager studentManager;
     private Calendar calendar;
     private CalendarView calendarView;
 
-
+    /**
+     * Initializes the student UI controller.
+     * It sets up the tests manager, student manager, and UI elements.
+     */
     @FXML
     private void initialize() {
         System.out.println("StudentUiController initialized");
         // Initialize the testsManager and studentManager
         this.testsManager = new TestsManager();
+
+        this.setMainModel(new StudentManager());
 
         // Initialize the studentRankingObservableList and set it as the items of the studentRankingTableView
         studentRankingObservableList = FXCollections.observableArrayList();
@@ -129,38 +141,58 @@ public class StudentUIController {
         Node calendarNode = calendarView;
         mySplitPane.getItems().set(1, calendarNode);
 
+        updateStudentRanking(); // Call the method to execute the task immediately
+
         timeline.setCycleCount(Timeline.INDEFINITE); // Set the timeline to repeat indefinitely
         timeline.play(); // Start the timeline
     }
 
     // Create a new timeline
     Timeline timeline = new Timeline(
-        new KeyFrame(
-            Duration.seconds(5), // Set interval of 1 second
-            event -> {
-                MongoClientConnection mongoClientConnection = new MongoClientConnection();
-                mongoClientConnection.importStudentList(this.studentManager, this.testsManager);
-                // Code to be executed every 10 second
-                this.studentManager.calculateEloPoints();
-                // the function put the students in order of elo points
-                this.studentManager.getStudentsList().sort((student1, student2) -> student2.getElo().compareTo(student1.getElo()));
-                studentRankingObservableList = FXCollections.observableArrayList(this.studentManager.getStudentsList());
-                studentRankingTableView.setItems(studentRankingObservableList);
-            }
-        )
+            new KeyFrame(
+                    Duration.seconds(5), // Set interval of 5 seconds
+                    event -> updateStudentRanking() // Call the method to update the student ranking
+            )
     );
 
+    /**
+     * Updates the student ranking.
+     * It retrieves the student list from the MongoDB database, calculates the Elo points, and updates the student ranking table view.
+     */
+    private void updateStudentRanking() {
+        MongoClientConnection mongoClientConnection = new MongoClientConnection();
+        mongoClientConnection.importStudentList(this.studentManager, this.testsManager);
+        // Code to be executed every 10 second
+        this.studentManager.calculateEloPoints();
+        // the function put the students in order of elo points
+        this.studentManager.getStudentsList().sort((student1, student2) -> student2.getElo().compareTo(student1.getElo()));
+        studentRankingObservableList = FXCollections.observableArrayList(this.studentManager.getStudentsList());
+        studentRankingTableView.setItems(studentRankingObservableList);
+    }
+
+    /**
+     * Sets the main model for the student UI controller.
+     *
+     * @param studentManager the manager of the students
+     */
     public void setMainModel(StudentManager studentManager) {
         this.studentManager = studentManager;
     }
 
+    /**
+     * Sets the current student for the student UI controller.
+     *
+     * @param student the current student
+     */
     public void setCurrentStudent(Student student) {
         System.out.println("Setting current student");
         System.out.println(student.getName());
         this.student = studentManager.findStudent(student.getName());
     }
 
-    // Show the details of the events in the calendar
+    /**
+     * Shows the details of the events in the calendar.
+     */
     public void showEventDetails() {
         List<Entry<?>> entries = calendar.findEntries("");
         for (Entry<?> entry : entries) {
@@ -171,11 +203,22 @@ public class StudentUIController {
                 entryViewBase.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
                     subjectTextField.setText(entry.getTitle());
                     dateTextField.setText(entry.getStartDate().toString());
+                    StudentTest studentTest = student.getTest(entry.getTitle(), entry.getStartDate().toString());
+                    if (studentTest != null) {
+                        gradeComboBox.setValue(Double.toString(studentTest.getMark().getValue()));
+                    } else {
+                        gradeComboBox.setValue("");
+                        System.out.println("No test found for subject: " + entry.getTitle() + " and date: " + entry.getStartDate().toString());
+                    }
                 });
             }
         }
     }
 
+    /**
+     * Handles the click event of the add button.
+     * It retrieves the entered subject, date, and grade, adds a new test to the student's tests list, and exports the student's data to the MongoDB database.
+     */
     @FXML
     private void onAddButtonClicked() {
         String subjectName = subjectTextField.getText();

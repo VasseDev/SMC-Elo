@@ -33,6 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * AdminUiController is the controller class for the admin UI.
+ * It handles the interaction between the user and the UI.
+ */
 public class AdminUiController {
 
     // Declare necessary variables
@@ -62,6 +66,10 @@ public class AdminUiController {
 
     private Stage stage;
 
+    /**
+     * This method is called when the FXML file is loaded.
+     * It initializes the controller class.
+     */
     @FXML
     private void initialize() {
         System.out.println("AdminUiController initialized");
@@ -129,19 +137,26 @@ public class AdminUiController {
         mySplitPane.getItems().set(1, calendarNode);
     }
 
-    // Set the testsManager
+
+    /**
+     * This method sets the testsManager.
+     *
+     * @param testsManager the testsManager to set
+     */
     public void setMainModel(TestsManager testsManager) {
         this.testsManager = testsManager;
     }
 
-    // Create a new timeline
+    /**
+     * This method creates a new timeline.
+     */
     Timeline timeline = new Timeline(
         new KeyFrame(
             Duration.seconds(5), // Set interval of 1 second
             event -> {
                 MongoClientConnection mongoClientConnection = new MongoClientConnection();
                 mongoClientConnection.importStudentList(studentManager, testsManager);
-                // Code to be executed every 10 second
+                // Code to be executed every 5 second
                 studentManager.calculateEloPoints();
                 // the function put the students in order of elo points
                 studentManager.getStudentsList().sort((student1, student2) -> student2.getElo().compareTo(student1.getElo()));
@@ -151,7 +166,9 @@ public class AdminUiController {
         )
     );
 
-    // Show the details of the events in the calendar
+    /**
+     * This method shows the details of the events in the calendar.
+     */
     public void showEventDetails() {
         List<Entry<?>> entries = calendar.findEntries("");
         for (Entry<?> entry : entries) {
@@ -183,6 +200,15 @@ public class AdminUiController {
         }
     }
 
+    /**
+     * This method finds an entry in the calendar.
+     *
+     * @param title the title of the entry
+     * @param date the date of the entry
+     * @param initialHour the initial hour of the entry
+     * @param finalHour the final hour of the entry
+     * @return true if the entry is found, false otherwise
+     */
     private boolean findEntry(String title, String date, int initialHour, int finalHour) {
         for (Object entry : calendar.findEntries(title)) {
             Entry entryCasted = (Entry<?>) entry;
@@ -193,10 +219,20 @@ public class AdminUiController {
         return false;
     }
 
+    /**
+     * This method sets the stage.
+     *
+     * @param stage the stage to set
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
+    /**
+     * This method handles the close window event.
+     *
+     * @param event the window event
+     */
     public void closeWindowEvent(WindowEvent event) {
         TestsManager testsManager = new TestsManager();
 

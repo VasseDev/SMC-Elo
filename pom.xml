@@ -51,6 +51,11 @@
       <artifactId>mongodb-driver-sync</artifactId>
       <version>5.1.0</version>
     </dependency>
+    <dependency>
+      <groupId>io.github.mkpaz</groupId>
+      <artifactId>atlantafx-base</artifactId>
+      <version>2.0.1</version>
+    </dependency>
   </dependencies>
 
   <build>

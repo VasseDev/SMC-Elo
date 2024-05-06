@@ -8,6 +8,7 @@ module student.managment.system {
     requires org.mongodb.bson;
     requires org.mongodb.driver.core;
     requires org.mongodb.driver.sync.client;
+    requires atlantafx.base;
 
     // 'opens' directives
     opens admin to javafx.fxml;

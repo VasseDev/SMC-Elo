@@ -16,11 +16,24 @@ import student.StudentManager;
 
 import java.util.Optional;
 
+/**
+ * MongoClientConnection is a utility class that provides methods to connect to a MongoDB database and perform login operations.
+ */
 public class MongoClientConnection {
     private String connectionString;
     private MongoClient mongoClient;
     private MongoDatabase database;
 
+    /**
+     * Checks the login credentials of a user.
+     *
+     * @param username the username of the user
+     * @param password the password of the user
+     * @param loginType the type of login (Student or Admin)
+     * @param loginUIController the controller of the login UI
+     * @param root the root node of the login UI
+     * @param studentManager the manager of the students
+     */
     public void checkLoginCredentials(String username, String password, String loginType, LoginUIController loginUIController, AnchorPane root, StudentManager studentManager) {
         connectionString = DBCredentials.connectionString;
         ServerApi serverApi = ServerApi.builder()
@@ -118,6 +131,13 @@ public class MongoClientConnection {
         }
     }
 
+    /**
+     * Checks if a username exists in a collection.
+     *
+     * @param username the username to check
+     * @param collection the collection to check in
+     * @return true if the username exists, false otherwise
+     */
     private boolean checkUsername(String username, MongoCollection<Document> collection) {
         boolean usernameFound = false;
         for (Document doc : collection.find()) {
@@ -128,6 +148,13 @@ public class MongoClientConnection {
         return usernameFound;
     }
 
+    /**
+     * Checks if a password exists in a collection.
+     *
+     * @param password the password to check
+     * @param collection the collection to check in
+     * @return true if the password exists, false otherwise
+     */
     private boolean checkPassword(String password, MongoCollection<Document> collection) {
         boolean passwordFound = false;
         for (Document doc : collection.find()) {
