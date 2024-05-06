@@ -1,12 +1,18 @@
 package main.db;
 
+import admin.Subject;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
 import com.mongodb.ServerApi;
 import com.mongodb.ServerApiVersion;
 import com.mongodb.client.*;
+import main.TestsManager;
 import org.bson.Document;
+import org.bson.codecs.DocumentCodec;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+import student.Mark;
 import student.Student;
 import student.StudentManager;
 import student.StudentTest;
@@ -145,15 +151,21 @@ public class MongoClientConnection {
         }
     }
 
-    public void importStudentList(StudentManager studentManager) {
+    public void importStudentList(StudentManager studentManager, TestsManager testsManager) {
         connectionString = DBCredentials.connectionString;
 
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
                 .build();
 
+        CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
+                MongoClientSettings.getDefaultCodecRegistry(),
+                CodecRegistries.fromCodecs(new MarkCodec(new DocumentCodec()))
+        );
+
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionString))
+                .codecRegistry(codecRegistry)
                 .serverApi(serverApi)
                 .build();
 
@@ -173,22 +185,42 @@ public class MongoClientConnection {
         // Write data lines
         studentManager.getStudentsList().clear();
         for (Document doc : collection.find()) {
-            studentManager.addStudent(new Student(doc.get("name").toString()));
+            String name = doc.getString("name");
+            ArrayList<Document> testsDocList = (ArrayList<Document>) doc.get("Tests");
+            ArrayList<StudentTest> tests = new ArrayList<>();
+            if (testsDocList != null) {
+                for (Document testDoc : testsDocList) {
+                    String subjectName = testDoc.getString("Subject");
+                    String date = testDoc.getString("Date");
+                    Document markDoc = (Document) testDoc.get("Grade");
+                    double value = markDoc.getDouble("value");
+                    // find matching subject in TestsManager
+                    Subject subject = testsManager.getSubject(subjectName);
+                    tests.add(new StudentTest(subject, date, new Mark(value), 12, 13));
+                }
+            }
+            Student student = new Student(name, tests);
+            studentManager.addStudent(student);
         }
-
         // Close the client
         mongoClient.close();
     }
 
-    public void exportStudentTests(Student student) {
+    public void exportStudent(Student student) {
         connectionString = DBCredentials.connectionString;
 
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
                 .build();
 
+        CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
+                MongoClientSettings.getDefaultCodecRegistry(),
+                CodecRegistries.fromCodecs(new MarkCodec(new DocumentCodec()))
+        );
+
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionString))
+                .codecRegistry(codecRegistry)
                 .serverApi(serverApi)
                 .build();
 

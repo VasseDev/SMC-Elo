@@ -81,7 +81,7 @@ public class LoginUIController {
     public void openStudentDashboard() {
         try {
             main.db.MongoClientConnection mongoClientConnection = new main.db.MongoClientConnection();
-            mongoClientConnection.importStudentList(studentManager);
+            mongoClientConnection.importStudentList(studentManager, new TestsManager());
             // Load the new FXML file
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/student/ui/studentUI.fxml"));
             Parent root = fxmlLoader.load();
@@ -97,8 +97,8 @@ public class LoginUIController {
             System.out.println(student);
             // set the main student
             StudentUIController controller = fxmlLoader.getController();
+            controller.setMainModel(studentManager); // Ensure this is called before setCurrentStudent
             controller.setCurrentStudent(student);
-            controller.setMainModel(studentManager);
         } catch (IOException e) {
             e.printStackTrace();
         }

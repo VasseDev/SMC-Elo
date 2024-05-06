@@ -21,8 +21,11 @@ public class StudentManager {
 
     public void calculateEloPoints() {
         for (Student student : studentsList) {
+            System.out.println("Calculating elo points for student " + student.getName());
+            System.out.println("Student tests list: " + student.getTestsList());
             for (StudentTest studentTest : student.getTestsList()) {
                 student.updateElo((int) Math.round(studentTest.getMark().getValue() * studentTest.getSubject().getMultiplier()));
+                System.out.println("Student " + student.getName() + " has " + student.getElo() + " elo points");
             }
         }
     }

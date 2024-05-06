@@ -17,6 +17,12 @@ public class Student {
         this.testsList = new ArrayList<>();
     }
 
+    public Student(String name, ArrayList<StudentTest> testsList) {
+        this.name = name;
+        this.testsList = testsList;
+        this.elo = 0;
+    }
+
     public String getName() {
         return name;
     }

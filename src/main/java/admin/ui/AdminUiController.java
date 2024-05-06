@@ -137,10 +137,10 @@ public class AdminUiController {
     // Create a new timeline
     Timeline timeline = new Timeline(
         new KeyFrame(
-            Duration.seconds(10), // Set interval of 1 second
+            Duration.seconds(5), // Set interval of 1 second
             event -> {
                 MongoClientConnection mongoClientConnection = new MongoClientConnection();
-                mongoClientConnection.importStudentList(studentManager);
+                mongoClientConnection.importStudentList(studentManager, testsManager);
                 // Code to be executed every 10 second
                 studentManager.calculateEloPoints();
                 // the function put the students in order of elo points

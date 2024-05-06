@@ -136,15 +136,15 @@ public class StudentUIController {
     // Create a new timeline
     Timeline timeline = new Timeline(
         new KeyFrame(
-            Duration.seconds(10), // Set interval of 1 second
+            Duration.seconds(5), // Set interval of 1 second
             event -> {
                 MongoClientConnection mongoClientConnection = new MongoClientConnection();
-                mongoClientConnection.importStudentList(studentManager);
+                mongoClientConnection.importStudentList(this.studentManager, this.testsManager);
                 // Code to be executed every 10 second
-                studentManager.calculateEloPoints();
+                this.studentManager.calculateEloPoints();
                 // the function put the students in order of elo points
-                studentManager.getStudentsList().sort((student1, student2) -> student2.getElo().compareTo(student1.getElo()));
-                studentRankingObservableList = FXCollections.observableArrayList(studentManager.getStudentsList());
+                this.studentManager.getStudentsList().sort((student1, student2) -> student2.getElo().compareTo(student1.getElo()));
+                studentRankingObservableList = FXCollections.observableArrayList(this.studentManager.getStudentsList());
                 studentRankingTableView.setItems(studentRankingObservableList);
             }
         )
@@ -155,7 +155,9 @@ public class StudentUIController {
     }
 
     public void setCurrentStudent(Student student) {
-        this.student = student;
+        System.out.println("Setting current student");
+        System.out.println(student.getName());
+        this.student = studentManager.findStudent(student.getName());
     }
 
     // Show the details of the events in the calendar
@@ -185,7 +187,12 @@ public class StudentUIController {
             return;
         }
         double grade = testsManager.convertGrade(gradeString);
-        student.addTest(new StudentTest(subject, date, new Mark(grade), 12, 13));
-        System.out.println("Test added");
+        // find marching student in student list
+        this.student.addTest(new StudentTest(subject, date, new Mark(grade), 12, 13));
+        for (StudentTest studentTest : student.getTestsList()) {
+            System.out.println(studentTest.getSubject().getName() + " " + studentTest.getDate() + " " + studentTest.getMark().getValue());
+        }
+        MongoClientConnection mongoClientConnection = new MongoClientConnection();
+        mongoClientConnection.exportStudent(this.student);
     }
 }
