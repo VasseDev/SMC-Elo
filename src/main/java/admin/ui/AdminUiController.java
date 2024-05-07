@@ -49,23 +49,16 @@ import java.util.Optional;
 public class AdminUiController {
 
     // Declare necessary variables
-    private TestsManager testsManager;
-    private StudentManager studentManager;
     @FXML
     private SplitPane mySplitPane;
-    private CalendarView calendarView;
-    private Calendar calendar;
     @FXML
     private TableView<StudentTable> studentTableView;
     @FXML
     private TableColumn<StudentTable, String> studentNameColumn;
     @FXML
     private TableColumn<StudentTable, String> markColumn;
-    private ObservableList<StudentTable> studentsObservableList;
     @FXML
     private TableView<Student> studentRankingTableView;
-    @FXML
-    private ObservableList<Student> studentRankingObservableList;
     @FXML
     private TableColumn<Student, String> studentRankingPositionColumn;
     @FXML
@@ -79,7 +72,13 @@ public class AdminUiController {
     @FXML
     private Label thirdPlaceLabel;
 
+    private Calendar calendar;
+    private CalendarView calendarView;
+    private ObservableList<Student> studentRankingObservableList;
+    private ObservableList<StudentTable> studentsObservableList;
     private Stage stage;
+    private StudentManager studentManager;
+    private TestsManager testsManager;
 
     /**
      * This method is called when the FXML file is loaded.
