@@ -9,32 +9,77 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="539.0" prefWidth="841.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="student.ui.StudentUIController">
    <children>
       <TabPane prefHeight="539.0" prefWidth="841.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Classifica">
+            <Tab text="Classifica">
                <content>
-              <AnchorPane prefHeight="504.0" prefWidth="837.0">
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: white;">
                      <children>
-                        <TableView fx:id="studentRankingTableView" layoutX="309.0" layoutY="71.0" prefHeight="368.0" prefWidth="223.0">
+                        <TableView fx:id="studentRankingTableView" layoutX="82.0" layoutY="66.0" prefHeight="368.0" prefWidth="280.0" stylesheets="@style.css">
                            <columns>
-                              <TableColumn fx:id="studentRankingPositionColumn" prefWidth="75.0" text="Pos" />
-                              <TableColumn fx:id="studentRankingEloColumn" prefWidth="75.0" text="Elo" />
-                              <TableColumn fx:id="studentRankingNameColumn" prefWidth="75.0" text="Name" />
+                              <TableColumn fx:id="studentRankingPositionColumn" prefWidth="49.600006103515625" resizable="false" text="Pos" />
+                              <TableColumn fx:id="studentRankingEloColumn" prefWidth="84.80001831054688" resizable="false" text="Elo" />
+                              <TableColumn fx:id="studentRankingNameColumn" prefWidth="143.99998474121094" resizable="false" sortable="false" text="Name" />
                            </columns>
                         </TableView>
+                        <AnchorPane layoutX="421.0" layoutY="66.0">
+                           <children>
+                              <ImageView fitHeight="108.0" fitWidth="111.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../admin/ui/images/medal1.png" />
+                                 </image>
+                              </ImageView>
+                              <Label fx:id="firstPlaceLabel" layoutX="108.0" layoutY="27.0" prefHeight="54.0" prefWidth="242.0" stylesheets="@style.css" text="          " textAlignment="CENTER">
+                                 <font>
+                                    <Font size="36.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="434.0" layoutY="204.0">
+                           <children>
+                              <ImageView fitHeight="80.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../admin/ui/images/medal2.png" />
+                                 </image>
+                              </ImageView>
+                              <Label fx:id="secondPlaceLabel" layoutX="76.0" layoutY="20.0" prefHeight="35.0" prefWidth="252.0" text="          " textAlignment="CENTER">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="434.0" layoutY="313.0">
+                           <children>
+                              <ImageView fitHeight="80.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../admin/ui/images/medal3.png" />
+                                 </image>
+                              </ImageView>
+                              <Label fx:id="thirdPlaceLabel" layoutX="76.0" layoutY="20.0" prefWidth="252.0" text="          " textAlignment="CENTER">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
                      </children>
                   </AnchorPane>
                </content>
-          </Tab>
+            </Tab>
           <Tab onSelectionChanged="#showEventDetails" text="Calendario">
             <content>
               <AnchorPane prefWidth="852.0">
                      <children>
-                        <SplitPane fx:id="mySplitPane" dividerPositions="0.5" prefHeight="471.0" prefWidth="852.0">
+                        <SplitPane fx:id="mySplitPane" dividerPositions="0.5" prefHeight="471.0" prefWidth="852.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <items>
                             <AnchorPane maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="160.0" prefWidth="200.0">
                                  <children>

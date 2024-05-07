@@ -9,16 +9,25 @@ import com.calendarfx.model.CalendarSource;
 import com.calendarfx.model.Entry;
 import com.calendarfx.view.CalendarView;
 import com.calendarfx.view.EntryViewBase;
+import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import login.ui.LoginUIController;
 import main.TestsManager;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -63,6 +72,12 @@ public class AdminUiController {
     private TableColumn<Student, String> studentRankingNameColumn;
     @FXML
     private TableColumn<Student, String> studentRankingEloColumn;
+    @FXML
+    private Label firstPlaceLabel;
+    @FXML
+    private Label secondPlaceLabel;
+    @FXML
+    private Label thirdPlaceLabel;
 
     private Stage stage;
 
@@ -129,6 +144,8 @@ public class AdminUiController {
         EventHandler<CalendarEvent> handler = e -> showEventDetails();
         calendar.addEventHandler(handler);
 
+        updateStudentRanking(); // Update the student ranking
+
         timeline.setCycleCount(Timeline.INDEFINITE); // Set the timeline to repeat indefinitely
         timeline.play(); // Start the timeline
 
@@ -154,17 +171,43 @@ public class AdminUiController {
         new KeyFrame(
             Duration.seconds(5), // Set interval of 1 second
             event -> {
-                MongoClientConnection mongoClientConnection = new MongoClientConnection();
-                mongoClientConnection.importStudentList(studentManager, testsManager);
-                // Code to be executed every 5 second
-                studentManager.calculateEloPoints();
-                // the function put the students in order of elo points
-                studentManager.getStudentsList().sort((student1, student2) -> student2.getElo().compareTo(student1.getElo()));
-                studentRankingObservableList = FXCollections.observableArrayList(studentManager.getStudentsList());
-                studentRankingTableView.setItems(studentRankingObservableList);
+                updateStudentRanking();
             }
         )
     );
+
+    /**
+     * Updates the student ranking.
+     * It retrieves the student list from the MongoDB database, calculates the Elo points, and updates the student ranking table view.
+     */
+    private void updateStudentRanking() {
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                MongoClientConnection mongoClientConnection = new MongoClientConnection();
+                mongoClientConnection.importStudentList(studentManager, testsManager);
+                return null;
+            }
+        };
+        // Run the task in a separate thread
+        new Thread(task).start();
+
+        // Code to be executed every 5 second
+        studentManager.calculateEloPoints();
+        // the function put the students in order of elo points
+        studentManager.getStudentsList().sort((student1, student2) -> student2.getElo().compareTo(student1.getElo()));
+        studentRankingObservableList = FXCollections.observableArrayList(studentManager.getStudentsList());
+        studentRankingTableView.setItems(studentRankingObservableList);
+        if (!studentRankingObservableList.isEmpty()) {
+            firstPlaceLabel.setText(studentRankingObservableList.get(0).getName() + " - " + studentRankingObservableList.get(0).getElo());
+        }
+        if (studentRankingObservableList.size() > 1) {
+            secondPlaceLabel.setText(studentRankingObservableList.get(1).getName() + " - " + studentRankingObservableList.get(1).getElo());
+        }
+        if (studentRankingObservableList.size() > 2) {
+            thirdPlaceLabel.setText(studentRankingObservableList.get(2).getName() + " - " + studentRankingObservableList.get(2).getElo());
+        }
+    }
 
     /**
      * This method shows the details of the events in the calendar.

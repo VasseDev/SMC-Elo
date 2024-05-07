@@ -85,6 +85,20 @@ public class MongoClientConnection {
                 }
                 if (!found) {
                     collection.deleteOne(doc);
+                    // also delete the test from the students
+                    MongoClientConnection studentMongoClientConnection = new MongoClientConnection();
+                    StudentManager studentManager = new StudentManager();
+                    studentMongoClientConnection.importStudentList(studentManager, new TestsManager());
+                    for (Student student : studentManager.getStudentsList()) {
+                        for (StudentTest studentTest : student.getTestsList()) {
+                            if (studentTest.getSubject().getName().equals(doc.get("Subject")) &&
+                                    studentTest.getDate().equals(doc.get("Date"))) {
+                                student.getTestsList().remove(studentTest);
+                                studentMongoClientConnection.exportStudent(student);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 

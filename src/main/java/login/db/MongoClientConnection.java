@@ -59,7 +59,8 @@ public class MongoClientConnection {
         MongoCollection<Document> collection = database.getCollection(loginType + "LoginCredentials");
         if (loginType.equals("Student")) {
             boolean usernameFound = checkUsername(username, collection);
-            if (!usernameFound) {
+            System.out.println(username);
+            if (!usernameFound && username.replace(" ", "") != "" && !username.isEmpty()) {
                 javafx.application.Platform.runLater(() -> {
                     System.out.println("User doesn't exist!");
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);

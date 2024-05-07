@@ -7,6 +7,7 @@ import javafx.animation.Timeline;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.scene.control.*;
 import javafx.util.Duration;
 import main.TestsManager;
@@ -57,6 +58,12 @@ import java.util.List;
     private TableColumn<Student, String> studentRankingNameColumn;
     @FXML
     private TableColumn<Student, String> studentRankingEloColumn;
+    @FXML
+    private Label firstPlaceLabel;
+    @FXML
+    private Label secondPlaceLabel;
+    @FXML
+    private Label thirdPlaceLabel;
 
     // Other fields
     private Student student;
@@ -160,14 +167,31 @@ import java.util.List;
      * It retrieves the student list from the MongoDB database, calculates the Elo points, and updates the student ranking table view.
      */
     private void updateStudentRanking() {
-        MongoClientConnection mongoClientConnection = new MongoClientConnection();
-        mongoClientConnection.importStudentList(this.studentManager, this.testsManager);
-        // Code to be executed every 10 second
-        this.studentManager.calculateEloPoints();
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                MongoClientConnection mongoClientConnection = new MongoClientConnection();
+                mongoClientConnection.importStudentList(studentManager, testsManager);
+                return null;
+            }
+        };
+        // Run the task in a separate thread
+        new Thread(task).start();
+        // Code to be executed every 5 second
+        studentManager.calculateEloPoints();
         // the function put the students in order of elo points
-        this.studentManager.getStudentsList().sort((student1, student2) -> student2.getElo().compareTo(student1.getElo()));
-        studentRankingObservableList = FXCollections.observableArrayList(this.studentManager.getStudentsList());
+        studentManager.getStudentsList().sort((student1, student2) -> student2.getElo().compareTo(student1.getElo()));
+        studentRankingObservableList = FXCollections.observableArrayList(studentManager.getStudentsList());
         studentRankingTableView.setItems(studentRankingObservableList);
+        if (!studentRankingObservableList.isEmpty()) {
+            firstPlaceLabel.setText(studentRankingObservableList.get(0).getName() + " - " + studentRankingObservableList.get(0).getElo());
+        }
+        if (studentRankingObservableList.size() > 1) {
+            secondPlaceLabel.setText(studentRankingObservableList.get(1).getName() + " - " + studentRankingObservableList.get(1).getElo());
+        }
+        if (studentRankingObservableList.size() > 2) {
+            thirdPlaceLabel.setText(studentRankingObservableList.get(2).getName() + " - " + studentRankingObservableList.get(2).getElo());
+        }
     }
 
     /**
