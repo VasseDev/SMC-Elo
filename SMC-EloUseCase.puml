@@ -1,0 +1,35 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+actor Student
+actor Admin
+rectangle "SMC-Elo" {
+    usecase UC1 as "
+                   Login
+                   ..
+                   If the selected Student doesn't exist"
+    usecase "Create New Student Account" as UC2
+    usecase "View Calendar" as UC3
+    usecase "Select Calendar View" as UC4
+    usecase "View Test" as UC5
+    usecase "Set Test Mark" as UC6
+    usecase "View Student Ranking" as UC7
+    usecase "Add Test" as UC8
+    usecase "Remove Test" as UC9
+    usecase "Modify Test Proprieties" as UC10
+    usecase "Add Student" as UC11
+
+    Student --> UC1
+    Student --> UC3
+    Student --> UC4
+    Student --> UC6
+    Student --> UC7
+    Admin --> Student
+    Admin --> UC8
+    Admin --> UC9
+    Admin --> UC10
+    Admin --> UC11
+    UC3 ..> UC5 : includes
+    UC1 <.. UC2 : extends
+}
+@enduml

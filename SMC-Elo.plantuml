@@ -1,0 +1,222 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class AdminTest {
+  - subject: Subject
+  - date: String
+  - initialHour: int
+  - finalHour: int
+
+  + AdminTest(Subject, String, int, int)
+  + getSubject(): Subject
+  + getDate(): String
+  + getInitialHour(): int
+  + getFinalHour(): int
+}
+class AdminUiController {
+  - mySplitPane: SplitPane
+  - studentTableView: TableView<StudentTable>
+  - studentNameColumn: TableColumn<StudentTable, String>
+  - markColumn: TableColumn<StudentTable, String>
+  - studentRankingTableView: TableView<Student>
+  - studentRankingPositionColumn: TableColumn<Student, String>
+  - studentRankingNameColumn: TableColumn<Student, String>
+  - studentRankingEloColumn: TableColumn<Student, String>
+  - firstPlaceLabel: Label
+  - secondPlaceLabel: Label
+  - thirdPlaceLabel: Label
+  - calendar: Calendar
+  - calendarView: CalendarView
+  - studentRankingObservableList: ObservableList<Student>
+  - studentsObservableList: ObservableList<StudentTable>
+  - stage: Stage
+  - studentManager: StudentManager
+  - testsManager: TestsManager
+  - timeline: Timeline
+
+  + initialize()
+  + setMainModel(TestsManager)
+  + updateStudentRanking()
+  + showEventDetails()
+  + findEntry(String, String, int, int)
+  + setStage(Stage)
+  + closeWindowEvent(WindowEvent)
+}
+class Algorithm {
+  - studentsList: ArrayList<Student>
+  - negativeMultiplier: double
+
+  + Algorithm()
+  + getStudentsList(): List<Student>
+  + averageTest(Subject, String): double
+  + addStudent(Student)
+  + updateEloPoints(Subject, String)
+}
+class ConvertDataToCSV {
+  -
+
+  + write(ArrayList<AdminTest>)
+  + read(String, ArrayList<Subject>): ArrayList<AdminTest>
+}
+class LoginUIController {
+  - stage: Stage
+  - studentManager: StudentManager
+
+  + initialize()
+  + onSubmitButtonClick()
+  + openAdminDashboard()
+  + openStudentDashboard()
+}
+class MainApp {
+  - primaryStage: Stage
+
+  + start(Stage)
+  + loadFXML(String)
+}
+class Mark {
+  - value: double
+
+  + Mark(double)
+  + getValue(): double
+}
+class MarkCodec {
+  - documentCodec: Codec<Document>
+
+  + encode(BsonWriter, Mark, EncoderContext)
+  + getEncoderClass(): Class<Mark>
+  + decode(BsonReader, DecoderContext): Mark
+  + generateIdIfAbsentFromDocument(Mark): Mark
+  + documentHasId(Mark): boolean
+  + getDocumentId(Mark): BsonValue
+}
+class MongoClientConnection {
+  - connectionString: String
+  - mongoClient: MongoClient
+  - database: MongoDatabase
+
+  + checkLoginCredentials(String, String, String, LoginUIController, AnchorPane, StudentManager)
+  + checkUsername(String, MongoCollection<Document>): boolean
+  + checkPassword(String, MongoCollection<Document>): boolean
+}
+class Student {
+  - name: String
+  - testsList: ArrayList<StudentTest>
+  - elo: Integer
+
+  + Student(String)
+  + Student(String, ArrayList<StudentTest>)
+  + getName(): String
+  + getNameProperty(): StringProperty
+  + getTestsList(): List<StudentTest>
+  + getElo(): Integer
+  + getEloProperty(): StringProperty
+  + updateElo(Integer)
+  + addTest(StudentTest)
+  + getTest(String, String): StudentTest
+}
+class StudentManager {
+  - studentsList: ArrayList<Student>
+
+  + StudentManager()
+  + addStudent(Student)
+  + calculateEloPoints()
+  + getStudentsList(): ArrayList<Student>
+  + findStudent(String): Student
+}
+class StudentTable {
+  - student: Student
+  - test: StudentTest
+  - elo: Integer
+
+  + StudentTable(Student, StudentTest)
+  + StudentTable(Student, StudentTest, Integer)
+  + getNameProperty(): StringProperty
+  + getMarkProperty(): StringProperty
+}
+class StudentTest {
+  - subject: Subject
+  - date: String
+  - initialHour: int
+  - finalHour: int
+  - mark: Mark
+
+  + StudentTest(Subject, String, Mark, int, int)
+  + getSubject(): Subject
+  + getDate(): String
+  + getInitialHour(): int
+  + getFinalHour(): int
+  + getMark(): Mark
+  + getMarkProperty(): StringProperty
+}
+class StudentUIController {
+  - mySplitPane: SplitPane
+  - gradeComboBox: ComboBox<String>
+  - subjectTextField: TextField
+  - dateTextField: TextField
+  - studentRankingTableView: TableView<Student>
+  - studentRankingObservableList: ObservableList<Student>
+  - studentRankingPositionColumn: TableColumn<Student, String>
+  - studentRankingNameColumn: TableColumn<Student, String>
+  - studentRankingEloColumn: TableColumn<Student, String>
+  - firstPlaceLabel: Label
+  - secondPlaceLabel: Label
+  - thirdPlaceLabel: Label
+  - student: Student
+  - testsManager: TestsManager
+  - studentManager: StudentManager
+  - calendar: Calendar
+  - calendarView: CalendarView
+
+  + initialize()
+  + updateStudentRanking()
+  + setMainModel(StudentManager)
+  + setCurrentStudent(Student)
+  + showEventDetails()
+  + onAddButtonClicked()
+}
+class Subject {
+  - name: String
+  - multiplier: Integer
+
+  + Subject(String, Integer)
+  + getName(): String
+  + setName(String)
+  + getMultiplier(): Integer
+  + setMultiplier(Integer)
+}
+class TestsManager {
+  - testsList: ArrayList<AdminTest>
+  - subjectsList: ArrayList<Subject>
+
+  + TestsManager()
+  + addTest(String, String, int, int)
+  + removeTest(String, String, int, int)
+  + saveToCSV()
+  + readFromCSV(): ArrayList<AdminTest>
+  + loadToDB()
+  + loadFromDB()
+  + getTestsList(): ArrayList<AdminTest>
+  + getSubject(String): Subject
+  + convertGrade(String): double
+}
+
+AdminUiController --> AdminTest : tests
+LoginUIController --> MainApp : starts
+MainApp --> StudentUIController : manages
+MainApp --> AdminUiController : manages
+Student --> Mark : has
+Mark --> MarkCodec : is encoded by
+Student --> StudentTest : tests
+StudentManager --> Student : manages
+StudentTable --> Student : displays
+StudentUIController --> Student : manages
+Subject --> TestsManager : has
+TestsManager --> StudentTest : manages
+ConvertDataToCSV --> Student : converts
+Algorithm --> Student : processes
+MongoClientConnection --> Student : connects
+
+@enduml
