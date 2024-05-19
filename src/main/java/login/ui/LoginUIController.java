@@ -61,7 +61,8 @@ public class LoginUIController {
             @Override
             protected Void call() throws Exception {
                 MongoClientConnection mongoClientConnection = new MongoClientConnection();
-                mongoClientConnection.checkLoginCredentials(username, password, loginType, LoginUIController.this, root, studentManager);
+                mongoClientConnection.checkLoginCredentials(username, password, loginType,
+                        LoginUIController.this, root, studentManager);
                 return null;
             }
         };

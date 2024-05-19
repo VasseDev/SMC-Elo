@@ -34,7 +34,8 @@ public class MongoClientConnection {
      * @param root the root node of the login UI
      * @param studentManager the manager of the students
      */
-    public void checkLoginCredentials(String username, String password, String loginType, LoginUIController loginUIController, AnchorPane root, StudentManager studentManager) {
+    public void checkLoginCredentials(String username, String password, String loginType,
+                                      LoginUIController loginUIController, AnchorPane root, StudentManager studentManager) {
         connectionString = DBCredentials.connectionString;
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)

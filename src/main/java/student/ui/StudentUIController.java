@@ -121,6 +121,9 @@ import java.util.List;
         calendarView.getCalendarSources().add(calendarSource);
         calendarView.setRequestedTime(LocalTime.now());
 
+        // Disable details popup
+        calendarView.setEntryDetailsCallback(param -> {return null;});
+
         // Set the default view to the month page and disable unnecessary buttons
         calendarView.showMonthPage();
         calendarView.setShowAddCalendarButton(false);
